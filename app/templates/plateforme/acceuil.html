@@ -1,0 +1,128 @@
+{% extends "siteda.html" %}
+{% block body %}
+{% include'elements/plateforme/slider.html'%}
+
+<div class="categories-shop">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="shop-cat-box">
+          <img class="img-fluid" src=" {{url_for('static', filename='plateforme/images/categories_img_01.jpg')}}"
+            alt="">
+          <a class="btn hvr-hover" href="#">Catégorie des vivres </a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="shop-cat-box">
+          <img class="img-fluid" src="{{url_for('static', filename='plateforme/images/minerais.jpg')}}" alt="">
+          <a class="btn hvr-hover" href="#">Catégorie des matières premières</a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="shop-cat-box">
+          <img class="img-fluid" src="{{url_for('static', filename='plateforme/images/autres.jpg')}}" alt="">
+          <a class="btn hvr-hover" href="#">Autres catégories</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="about-box-main">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="banner-frame"> <img class="img-fluid"
+            src="{{url_for('static', filename='plateforme/images/transport.jpg')}}" alt="">
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <h2 class="noo-sh-title-top">Expertise en <span>transport.</span></h2>
+        <p class="text-justify">La circulation des biens et des services, l’entreposage et la chaine d’approvisionnement 
+          sont d'une importance très capitale, KIVU EXCHANGE COMPANY de par son expérience dans le domaine de la logistique 
+          et transport gère les flux physique des biens entre autre ; de la provenance des marchandises en passant 
+          par le port/gare et aéroport à travers la douane jusqu’à sa destination finale. Nous assurons un service 
+          de transport et logistique de renom et de standard du commerce international sur l'étendue nationale ainsi 
+          qu’international. 
+          <br>
+          Nous sommes conscients des infrastructures en mauvais état et le besoin de livraison à temps ici chez nous en 
+          République Démocratique du Congo ainsi que dans d’autres pays voisins, c’est ainsi que nous mettons au service 
+          de nos clients des véhicules appropries, l'expertise qualifiée et une suivi continuelle des marchandises du 
+          point de chargement/ embarquement jusqu'au point de déchargement/débarquement, afin de garantir la sécurité, 
+          la facilitation et la livraison dans un délai escompte...  
+          <br></p>
+        <a class="btn hvr-hover" href=" {{url_for('plate.aproposdenous')}} ">Savoir plus</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="box-add-products">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="title-all text-center">
+          <h1>Nos produits à vendre</h1>
+          <p></p>
+        </div>
+      </div>
+    </div>
+    <div class="row special-list" style="position: relative; height: 870.312px;">
+
+      {%for produits in produit%}
+
+      <div class="col-lg-3 col-md-6 special-grid best-seller" style="position: absolute; left: 0px; top: 0px;">
+        <div class="products-single fix box-shadow--2dp">
+          <div class="box-img-hover">
+            <div class="type-lb">
+              <p class="sale">Disponible</p>
+            </div>
+            <img src=" {{ url_for('static', filename='produit/{}'.format(produits.img_url))  }} " class="img-fluid" alt="Image">
+            <div class="mask-icon">
+              <ul>
+                <li><a href="{{ url_for('plate.commandepro', code=produits.code)}}" data-toggle="tooltip" data-placement="right" title="" data-original-title="View"><i
+                      class="fas fa-eye"></i></a></li>
+              </ul>
+              <a class="cart" href="{{ url_for('plate.commandepro', code=produits.code)}}">Commander</a>
+          </div>
+          </div>
+          <div class="why-text">
+            <h4> {{produits.nom}} </h4>
+            <h5> ${{produits.prix_p}}/{{produits.mesure}}</h5>
+          </div>
+        </div>
+      </div>
+
+      {%endfor%}
+
+
+    </div>
+  </div>
+</div>
+<div class="instagram-box">
+  <div class="main-instagram owl-carousel owl-theme owl-loaded owl-drag">
+    <div class="owl-stage-outer">
+      <div class="owl-stage" style="transform: translate3d(-1852px, 0px, 0px); transition: all 0.25s ease 0s; width: 5294px;">
+        {%for p in slider %}
+        <div class="owl-item cloned" style="width: 264.667px;">
+          <div class="item">
+            <div class="ins-inner-box">
+              <img src="{{ url_for('static', filename='produit/{}'.format(p.img_url))  }}" alt="">
+              <div class="hov-in">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {%endfor%}
+
+      </div>
+    </div>
+    <div class="owl-nav"><button type="button" role="presentation" class="owl-prev"><i
+          class="fas fa-arrow-left"></i></button><button type="button" role="presentation" class="owl-next"><i
+          class="fas fa-arrow-right"></i></button></div>
+    <div class="owl-dots disabled"></div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,220 @@
+{% extends "siteda.html" %}
+{% block body %}
+
+
+<div class="all-title-box">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h2> {{page}} </h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href=" {{url_for('plate.index')}} ">Accueil</a></li>
+          <li class="breadcrumb-item active">{{page}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="about-box-main">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="banner-frame"> <img class="img-fluid"
+            src=" {{url_for('static', filename='plateforme/images/gf.jpg')}}  " alt="">
+        </div>
+      </div>
+      <div class="col-lg-6"><br><br>
+        <h2 class="noo-sh-title-top">Kivu Exchange Company </h2>
+        <br>
+        <p class="text-justify">La société Kivu Exchange Company S.a.r.l, KIEXCO en sigle est une société anonyme à
+          responsabilité limitée, implantée à Goma,
+          province du Nord-Kivu en République Démocratique du Congo. Elle est enregistrée au registre du commerce et
+          crédit mobilier sous le numéro CD/GOM/RCCM/19-B-0069,
+          son mode d’administration est géré et dirigé par Mr. KABATI BAYOYA Jean-Paul. <br>
+
+          Elle a pour secteur d’activité le commerce général dont le transport et la logistique, la vente,
+          l’installation et l’exploitation des infrastructures de biens et services en général, ainsi que gérer et
+          exécuter d’autres activités qui peuvent s’avérer comme pertinentes à la réalisation des objectifs ci-dessus.
+        </p>
+
+      </div>
+    </div>
+    <br><br><br>
+    <div class="row my-5">
+      <div class="col-12">
+        <h2 class="noo-sh-title">Nos services</h2>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-block-inner">
+          <h3>Commerce général</h3>
+          <p class="text-justify">
+            Nous offrons des biens et services dans le but de satisfaire les besoins des personnes,
+            pallier aux challenge des entreprises ou de groupe des personnes ; la spécificité de
+            cette offre réside dans le sens que beaucoup d’organisations et/ou personne, cherche
+            des solutions à leurs problèmes pour bien vaquer à leurs activités...
+            <br><br><br>
+            <a data-toggle="modal" data-target="#commerce" class="btn hvr-hover" href="#">Savoir plus </a>
+          </p>
+        </div>
+        <div class="modal fade" id="commerce" role="dialog">
+          <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+
+                <h4 class="modal-title pull-left">Commerce général</h4>
+              </div>
+              <div class="modal-body text-justify">
+                <p>Nous offrons des biens et services dans le but de satisfaire les besoins des personnes,
+                  pallier aux challenge des entreprises ou de groupe des personnes ; la spécificité de cette
+                  offre réside dans le sens que beaucoup d’organisations et/ou personne, cherche des solutions
+                  à leurs problèmes pour bien vaquer à leurs activités. Kivu Exchange vous facilite la tâche de
+                  par sa structure et son management. Notre scope d’activités s’étend du commerce général
+                  aux relations interpersonnelles avec notre clientèle. </p>
+
+                <p>
+                  Nous mettons à votre disposition: <br>
+                  - Plus d’une centaine types des produits tels que les hydrocarbures,
+                  l’agro-alimentaire, produits des mines et carrières <br>
+                  - Des biens et services tels que le transport et la logistique <br>
+                  - Et l’approvisionnement des plusieurs autres produits connus mondialement
+                  et localement sur commande spéciale. <br>
+                  - livraison à domicile dans un délai imparti.
+                </p>
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-block-inner">
+          <h3>LOGISTIQUE (TRANSPORT)</h3>
+          <p class="text-justify">
+            La circulation des biens et des services, l’entreposage et la chaine d’approvisionnement
+            sont d'une importance très capitale, KIVU EXCHANGE COMPANY de par son expérience dans
+            le domaine de la logistique et transport gère les flux physique des biens entre autre;...
+            <br><br><br><br>
+            <a data-toggle="modal" data-target="#logistique" class="btn hvr-hover" href="#">Savoir plus </a>
+          </p>
+        </div>
+        <div class="modal fade " id="logistique" role="dialog">
+          <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+
+                <h4 class="modal-title pull-left">Logistique (Transport) </h4>
+              </div>
+              <div class="modal-body text-justify">
+                <p>La circulation des biens et des services, l’entreposage et la chaine d’approvisionnement
+                  sont d'une importance très capitale, KIVU EXCHANGE COMPANY de par son expérience dans
+                  le domaine de la logistique et transport gère les flux physique des biens entre autre ;
+                  de la provenance des marchandises en passant par le port/gare et aéroport à travers
+                  la douane jusqu’à sa destination finale. Nous assurons un service de transport et
+                  logistique de renom et de standard du commerce international sur l'étendue nationale
+                  ainsi qu’international. </p>
+
+                <p>
+                  Nous sommes conscients des infrastructures en mauvais état et le besoin de livraison
+                  à temps ici chez nous en République Démocratique du Congo ainsi que dans d’autres
+                  pays voisins, c’est ainsi que nous mettons au service de nos clients des véhicules
+                  appropries, l'expertise qualifiée et une suivi continuelle des marchandises du
+                  point de chargement/ embarquement jusqu'au point de déchargement/débarquement,
+                  afin de garantir la sécurité, la facilitation et la livraison dans un délai escompte.
+                </p>
+
+                <p>
+                  Avec nous vous avez la possibilité de retracer/ de suivre en ligne votre
+                  chargement par les applications que l'entreprise met à la disposition des clients
+                  pour garantir la fiabilité.
+                  Nos services spécialisés de transport :
+                  <br>
+                  -Camions tous terrain porte –containers, semi –remorque, porte charre ainsi que
+                  des véhicules utilitaires traçable. <br>
+                  -Escorte des produits, tracking & tracing des containeurs et colis. <br>
+                  -Location des dépôts, véhicules, élévateurs, grue, ainsi que la main d’œuvres…
+
+
+                </p>
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn  btn-default" data-dismiss="modal">Fermer</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-block-inner">
+          <h3>AGENCE EN DOUANE</h3>
+          <p class="text-justify">
+            La société KIVU EXCHANGE COMPANY a été attribué le numéro Import- export : PM/PP/0023/AWX-19/I001819MKIZ,
+            par l’ordonnance loi dans le cadre du registre des importateurs et exportateurs de la RDC. Ainsi, notre
+            agence
+            joue un rôle majeur d’intermédiaire entre la Direction générale de Douanes et Accises de la République
+            démocratique
+            et notre chère clientèle.
+            <br><br>
+            <a data-toggle="modal" data-target="#agence" class="btn hvr-hover" href="#">Savoir plus </a>
+
+          </p>
+        </div>
+        <div class="modal fade " id="agence" role="dialog">
+          <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+
+                <h4 class="modal-title">Agence en douane </h4>
+              </div>
+              <div class="modal-body text-justify">
+                <p>La société KIVU EXCHANGE COMPANY a été attribué le numéro Import- export :
+                  PM/PP/0023/AWX-19/I001819MKIZ,
+                  par l’ordonnance loi dans le cadre du registre des importateurs et exportateurs de la RDC. Ainsi,
+                  notre
+                  agence joue un rôle majeur d’intermédiaire entre la Direction générale de Douanes et Accises de la
+                  République démocratique et notre chère clientèle.</p>
+
+                <p>
+                  Nous leurs aidons dans: <br>
+                  - Les procédures dédouanement; <br>
+                  - Importation et exportation des biens, <br>
+                  - Chargement et déchargement, entreposage, transbordement, levage et manutention des
+                  containeurs et autres types de cargaison.
+
+
+                </p>
+
+                <p>Dans cette même optique, nous offrons des services conjoints, en passant des commandes et
+                  chercher des produits à la source pour nos clients, ainsi nous assurons la logistique E2E,
+                  le transport, le dédouanement dans le but de satisfaire les besoins de nos clients..</p>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn  btn-default" data-dismiss="modal">Fermer</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

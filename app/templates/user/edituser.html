@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 30px 150px 30px  150px">
+        <div class="header">
+            <h4 class="title">Editer ({{ user_nom }})  </h4>
+        </div>
+        <div class="content">
+                {% with messages= get_flashed_messages(with_categories=true) %}
+                {% if messages  %}
+                    {% for category, message in messages %}
+                        <div class="alert text-center alert-{{ category }}">
+                            <b>{{ message }}</b>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data" >
+                {{ form.csrf_token }}
+                <div class="row">
+                    <div class="col-md-4">
+                            <div class="form-group">
+                                    <label>Prénom</label>
+                                    {% if form.ed_prenom.errors %}
+                                    {{ form.ed_prenom(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.ed_prenom.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.ed_prenom(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+        
+                    </div>
+                    <div class="col-md-8">
+                            <div class="form-group">
+                                    <label>Nom </label>
+                                    {% if form.ed_nom.errors %}
+                                    {{ form.ed_nom(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.ed_nom.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.ed_nom(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                        <div class="col-md-12">
+                                <div class="form-group">
+                                        <label>Post-nom</label>
+                                        {% if form.ed_post_nom.errors %}
+                                        {{ form.ed_post_nom(class="form-control border-input is-invalid")}}
+                                        <i class="form-group__bar"></i>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.ed_post_nom.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        {{ form.ed_post_nom(class="form-control border-input")}}
+                                        <i class="form-group__bar"></i>
+                                        {% endif %}
+                                </div>
+            
+                        </div>
+                </div>
+
+                <div class="row">
+                        <div class="col-md-12">
+                                <div class="form-group">
+                                        <label>Fonction</label>
+                                        {% if form.ed_role.errors %}
+                                        {{ form.ed_role(class="form-control select2 ")}}
+                                        <i class="form-group__bar"></i>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.ed_role.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        {{ form.ed_role(class="form-control select2")}}
+                                        <i class="form-group__bar"></i>
+                                        {% endif %}
+                                </div>
+            
+                        </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="form-group">
+                                    <label>E-mail</label>
+                                    {% if form.ed_username.errors %}
+                                    {{ form.ed_username(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.ed_username.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.ed_username(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                    
+                </div>
+
+                <div class="text-center">
+                        <button class="btn btn-outline-info btn-md" id="submit" name="ed_submit" type="submit">
+                                <i class="ti-user"></i> Editer utilisateur
+                        </button>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

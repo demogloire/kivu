@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 150px 150px 0px  150px">
+
+        <div class="content">
+          <div class="row">
+              <div class="col-lg-12">
+                    <div class="col-lg-4">
+                        <div class="text-center">
+                            <a class="btn btn-lg btn-primary" href=" {{url_for('user.liuser')}} "> <i class="ti-user"></i> Utilisateur</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="text-center">
+                            <a class="btn btn-lg btn-success" href="{{url_for('main.configpro')}} "> <i class="ti-shopping-cart"></i> Commande</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="text-center">
+                            <a class="btn btn-lg btn-warning" href=""><i class="ti-receipt"></i> Article</a>
+                        </div>
+                        
+                    </div>
+              </div>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

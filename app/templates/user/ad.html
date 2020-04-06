@@ -1,0 +1,150 @@
+{% extends "basead.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 30px 150px 30px  150px">
+        <div class="header">
+            <h4 class="title">Ajouter utilisateur</h4>
+        </div>
+        <div class="content">
+                {% with messages= get_flashed_messages(with_categories=true) %}
+                {% if messages  %}
+                    {% for category, message in messages %}
+                        <div class="alert text-center alert-{{ category }}">
+                            <b>{{ message }}</b>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data" >
+                {{ form.csrf_token }}
+                <div class="row">
+                    <div class="col-md-4">
+                            <div class="form-group">
+                                    <label>Prénom</label>
+                                    {% if form.prenom.errors %}
+                                    {{ form.prenom(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.prenom.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.prenom(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+        
+                    </div>
+                    <div class="col-md-8">
+                            <div class="form-group">
+                                    <label>Nom </label>
+                                    {% if form.nom.errors %}
+                                    {{ form.nom(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.nom.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.nom(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                        <div class="col-md-12">
+                                <div class="form-group">
+                                        <label>Post-nom</label>
+                                        {% if form.post_nom.errors %}
+                                        {{ form.post_nom(class="form-control border-input is-invalid")}}
+                                        <i class="form-group__bar"></i>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.post_nom.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        {{ form.post_nom(class="form-control border-input")}}
+                                        <i class="form-group__bar"></i>
+                                        {% endif %}
+                                </div>
+            
+                        </div>
+                </div>
+
+                <div class="row">
+                        <div class="col-md-12">
+                                <div class="form-group">
+                                        <label>Fonction</label>
+                                        {% if form.role.errors %}
+                                        {{ form.role(class="form-control select2 ")}}
+                                        <i class="form-group__bar"></i>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.role.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        {{ form.role(class="form-control select2")}}
+                                        <i class="form-group__bar"></i>
+                                        {% endif %}
+                                </div>
+            
+                        </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                    <label>E-mail</label>
+                                    {% if form.username.errors %}
+                                    {{ form.username(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.username.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.username(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                    <label>Mot de passe</label>
+                                    {% if form.password.errors %}
+                                    {{ form.password(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.password(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                        <button class="btn btn-outline-info btn-md" id="submit" name="submit" type="submit">
+                                <i class="ti-user"></i> Ajouter administrateur
+                        </button>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

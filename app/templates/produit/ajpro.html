@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block summurnote %}
+    <script src=" {{ url_for('static', filename='summnernote/jquer.js')}} "></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='summnernote/summernote-lite.css')}} ">
+    <script src="{{ url_for('static', filename='summnernote/summernote-lite.js')}}"></script>
+{% endblock  %}
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 30px 150px 30px  150px">
+        <div class="header">
+            <h4 class="title">Ajouter produit</h4>
+        </div>
+        <div class="content">
+                {% with messages= get_flashed_messages(with_categories=true) %}
+                {% if messages  %}
+                    {% for category, message in messages %}
+                        <div class="alert text-center alert-{{ category }}">
+                            <b>{{ message }}</b>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data" >
+                {{ form.csrf_token }}
+ 
+                <div class="row">
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                    <label>Nom du produit</label>
+                                    {% if form.nom.errors %}
+                                    {{ form.nom(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.nom.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.nom(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                    <label>Prix du produit($)</label>
+                                    {% if form.prix_p.errors %}
+                                    {{ form.prix_p(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.prix_p.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.prix_p(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="form-group">
+                                    <label>Unité de mesure</label>
+                                    {% if form.mesure.errors %}
+                                    {{ form.mesure(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.mesure.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.mesure(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="form-group">
+                                    <label>Contenue</label>
+                                    {% if form.resume.errors %}
+                                    {{ form.resume(id="summernote")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.resume.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.resume(id="summernote")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div> 
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Catégorisation</label>
+                                {% if form.rech_cate.errors %}
+                                {{ form.rech_cate(class="form-control select2 ")}}
+                                <i class="form-group__bar"></i>
+                                <div class="invalid-feedback">
+                                    {% for error in form.rech_cate.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.rech_cate(class="form-control select2")}}
+                                <i class="form-group__bar"></i>
+                                {% endif %}
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                    <label>Url image</label>
+                                    {% if form.img_url.errors %}
+                                    {{ form.img_url(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.img_url.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.img_url(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                        <button class="btn btn-outline-info btn-md" id="submit" name="submit" type="submit">
+                                <i class="ti-view-list-alt"></i> Nouveau produit
+                        </button>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

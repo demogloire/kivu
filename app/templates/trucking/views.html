@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp">
+            
+        <div class="header">
+            <h4 class="title">Les colis frettés </h4>
+            <br>
+            <a href="{{ url_for('trucking.ajouttucking')}}" class="btn btn-warning"> <i class="ti-truck"></i> Ajouter un colis </a>
+            <a href="{{ url_for('trucking.devis')}}" class="btn btn-info"> <i class="ti-bookmark-alt"></i> Le devis </a>
+        </div>
+
+       <br>
+        {% with messages= get_flashed_messages(with_categories=true) %}
+            {% if messages  %}
+                {% for category, message in messages %}
+                    <div class="alert text-center alert-{{ category }}">
+                        <b>{{ message }}</b>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        <div class="content table-responsive table-full-width">
+            <table class="table table-striped">
+
+                <thead>
+                    <th>Trucking number</th>
+                    <th class="text-center">Pays(Ville) de pro.</th>
+                    <th  class="text-center">Pays de dest.</th>
+                    <th  class="text-center">Date d'envoi.</th>
+                    <th  class="text-center">Date reception.</th>
+                    <th  class="text-center">Dossier</th>
+                    <th  class="text-center">Transit(ajouter)</th>
+                    <th  class="text-center">Livraison</th>
+                    <th  class="text-center">Apercu</th>
+                </tr></thead>
+                <tbody>
+                    {% for listes in liste%}
+                        <tr>
+                            <td> {{ listes.tracking_number }} </td>
+                            <td> {{ ' {} ({}) '.format(listes.provenance,listes.ville_provenance ) }} </td>
+                            <td> {{ listes.destination }} </td>
+                            <td> {{ "{} à {} ".format(listes.date_envoi.strftime('%d/%m/%Y'),listes.date_envoi.strftime('%H:%M:%S') ) }} </td>
+                            {% if listes.date_livraison==None %}
+                            <td class="text-center"> <a class="btn btn-sm btn-danger">  <i class="ti-truck"></i>  </a></td>
+                            {% else %}
+                            <td> {{ listes.date_livraison.strftime('%d/%m/%Y %H:%M:%S') }} </td>
+                            {% endif %}
+
+                            {% if listes.encours == 0  %}
+                            <td  class="text-center"><a href="  {{ url_for('trucking.encours', transit_id=listes.id)}} " class="badge badge-pill badge-danger"> En  traitement</a></td>
+                            {% else %}
+                            <td  class="text-center"><a href="  {{ url_for('trucking.encours', transit_id=listes.id)}} " class="badge badge-pill badge-success"> Envoyé</a></td>
+                            {% endif %}
+
+                            {% if listes.statut == 0 and listes.date_livraison== None %}
+                            <td  class="text-center"><a href="  {{ url_for('trucking.ajoutransit', transit_id=listes.id)}} " class="btn btn-danger"> <i class="ti-plus"></i> </a></td>
+                            {% elif listes.statut == 1 and listes.date_livraison== None %}
+                            <td  class="text-center"><a href="  {{ url_for('trucking.datelivraison', transit_id=listes.id)}} " class="btn btn-danger"> Completer date </a></td>
+                            {% else %}
+                            <td class="text-center"> <a class="btn btn-sm btn-success"><i  class="ti-check"></i></a> </td>
+                            {% endif %}
+                            
+                            
+
+                            {% if listes.statut == 0 %}
+                            <td  class="text-center"><a href=" {{ url_for('trucking.statutranist', transit_id=listes.id)}}" class="btn btn-danger"> <i class="ti-unlock"></i> </a></td>
+                            {% else %}
+                            <td  class="text-center"><a href="{{ url_for('trucking.statutranist', transit_id=listes.id)}}" class="btn btn-info"> <i class="ti-lock"></i> </a></td>
+                            {% endif %}
+
+                            <td class="text-center"> <a href="{{ url_for('trucking.bordtransit', transit_id=listes.id)}}" class="btn btn-warning"> <i class="ti-agenda"></i> </a> </td>
+
+                        
+                        </tr>
+                    {% endfor %}
+ 
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

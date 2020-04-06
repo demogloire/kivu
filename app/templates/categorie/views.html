@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 30px 80px 30px  80px">
+            
+        <div class="header">
+            <h4 class="title">Les catégories </h4>
+            <br>
+            <a href="{{ url_for('categorie.ajoutcate')}}" class="btn btn-success"> <i class="ti-menu-alt"></i> Ajouter une catégorie </a>
+
+        </div>
+
+       <br>
+        {% with messages= get_flashed_messages(with_categories=true) %}
+            {% if messages  %}
+                {% for category, message in messages %}
+                    <div class="alert text-center alert-{{ category }}">
+                        <b>{{ message }}</b>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        <div class="content table-responsive table-full-width">
+            <table class="table table-striped">
+
+                <thead>
+                    <th>Noms</th>
+                    <th class="text-center">Classification</th>
+                    <th  class="text-center">Statut</th>
+                    <th  class="text-center">Action</th>
+                </tr></thead>
+                <tbody>
+                    {% for listes in liste%}
+                        <tr>
+                            <td> {{ ' {} {} {} '.format(listes.nom, listes.post_nom, listes.prenom)  }} </td>
+                            <td class="text-center"> {{ listes.type_categorie.nom }} </td>
+                            {% if listes.statut==True%}
+                            <td  class="text-center"><a href="{{ url_for('categorie.statutcat', cat_id=listes.id)}}  " class="btn btn-success"> <i class="ti-unlock"></i> </a></td>
+                            {% else %}
+                            <td  class="text-center"><a href="{{ url_for('categorie.statutcat', cat_id=listes.id)}} " class="btn btn-danger"> <i class="ti-lock"></i> </a></td>
+                            {% endif%}
+                            <td  class="text-center"> <a href="{{ url_for('categorie.editcate', cate_id=listes.id)}}" class="btn btn-warning"> <i class="ti-pencil-alt"></i> </a> </td>
+                        </tr>
+                    {% endfor %}
+ 
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

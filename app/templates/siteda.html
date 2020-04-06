@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<!-- Basic -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Site Metas -->
+    <title>Kivu Exchange Campuny Sarl</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="Kivu Exchange Company">
+
+    <!-- Site Icons -->
+    <link rel="apple-touch-icon" href=" {{url_for('static',filename='logo/t.png')}} ">
+    <link rel="icon" href="{{ url_for('static',filename='logo/un.ico')}}" type="image/png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{url_for('static',filename='plateforme/css/bootstrap.min.css')}}" />
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="{{url_for('static',filename='plateforme/css/style.css')}}" />
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{{url_for('static',filename='plateforme/css/responsive.css')}}" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{url_for('static',filename='plateforme/css/custom.css')}}" />
+    <link rel="stylesheet" href="{{url_for('static',filename='css/otherstyle.css')}}" />
+</head>
+
+<body>
+    <!-- Start Main Top -->
+    {% include'elements/plateforme/maintop.html'%}
+    <!-- End Main Top -->
+
+    <!-- Start Main Top -->
+    {% include'elements/plateforme/menu.html'%}
+    <!-- End Main Top -->
+
+    <!-- Start Top Search -->
+   
+    <!-- End Top Search -->
+    {% block body %}
+   
+    
+    {% endblock body %}
+  
+
+    <!-- Start Footer  -->
+    <footer>
+        <div class="footer-main">
+            <div class="container">
+				<div class="row">
+					<div class="col-lg-4 col-md-12 col-sm-12">
+						<div class="footer-top-box">
+							<h3>Heure du travail</h3>
+							<ul class="list-time">
+								<li>Lundi  - Vendredi: 08h00 à 17h00 </li> <li>Samedi: 10h00 à 16h00</li> <li>Dimanche: <span>Fermer</span></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-12 col-sm-12">
+						<div class="footer-top-box">
+							<h3>Newsletter</h3>
+							<form class="newsletter-box">
+								<div class="form-group">
+									<input class="" type="email" name="Email" placeholder="Adresse E-mail*" />
+									<i class="fa fa-envelope"></i>
+								</div>
+								<button class="btn hvr-hover" type="submit">Envoyer</button>
+							</form>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-12 col-sm-12">
+						<div class="footer-top-box">
+							<h3>Reseaux sociaux</h3>
+							<p>Suivez nos pages sur:</p>
+							<ul>
+                                <li><a href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
+                            </ul>
+						</div>
+					</div>
+				</div>
+				<hr>
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-widget">
+                            <h4>Kivu Exchange Company</h4>
+                            <p class="text-justify">La société Kivu Exchange Company S.a.r.l, KIEXCO en sigle est une société anonyme à 
+                                responsabilité limitée, implantée à Goma, province du Nord-Kivu en République Démocratique du Congo. 
+                                Elle est enregistrée au registre du commerce et crédit mobilier sous le numéro CD/GOM/RCCM/19-B-0069.</p> 
+					    </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-link">
+                            <h4>Information</h4>
+                            <ul>
+                                <li><a href=" {{url_for('plate.aproposdenous') }}  ">A propos de nous</a></li>
+                                <li><a href="{{url_for('plate.suivis') }} ">Ethiopian Fret</a></li>
+                                <li><a href="{{url_for('plate.produit') }} ">Nos produits</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="footer-link-contact">
+                            <h4>Contact Us</h4>
+                            <ul>
+                                <li>
+                                    <p><i class="fas fa-map-marker-alt"></i>Ville de Goma, Quartier le volcan<br>En face d'ASTRAMES.<br></p>
+                                </li>
+                                <li> 
+                                    <p><i class="fas fa-phone-square"></i>Téléphone: <a href="tel:+243991136647">+243 991 136 647</a></p>
+                                </li>
+                                <li>
+                                    <p><i class="fas fa-envelope"></i>Email: <a href="mailto:info@kivu.exchange">info@kivu.exchange</a></p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End Footer  -->
+
+    <!-- Start copyright  -->
+    <div class="footer-copyright">
+        <p class="footer-company">Copyright &copy;<script>document.write(new Date().getFullYear());</script> Tous droits réservés | Kivu Exchange Company</p>
+    </div>
+    <!-- End copyright  -->
+
+    <a href="#" id="back-to-top" title="Back to top" style="display: none;">&uarr;</a>
+
+    <!-- ALL JS FILES -->
+    <script src="{{url_for('static',filename='plateforme/js/jquery-3.2.1.min.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/popper.min.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/bootstrap.min.js')}}"></script>
+    {% block  jscode %}{% endblock  %}
+    <!-- ALL PLUGINS -->
+    <script src="{{url_for('static',filename='plateforme/js/jquery.superslides.min.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/bootstrap-select.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/inewsticker.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/bootsnav.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/images-loded.min.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/isotope.min.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/owl.carousel.min.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/baguetteBox.min.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/form-validator.min.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/contact-form-script.js')}}"></script>
+    <script src="{{url_for('static',filename='plateforme/js/custom.js')}}"></script>
+</body>
+
+</html>

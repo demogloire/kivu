@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin-top: 100px; margin-bottom: 150px; ">
+        <div class="header">
+            <h4 class="title">Modification de borderaux</h4>
+        </div>
+        <div class="content">
+                {% with messages= get_flashed_messages(with_categories=true) %}
+                {% if messages  %}
+                    {% for category, message in messages %}
+                        <div class="alert text-center alert-{{ category }}">
+                            <b>{{ message }}</b>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data" >
+                {{ form.csrf_token }}
+
+                <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Trucking Number</label>
+                                {% if form.truckingnumber.errors %}
+                                {{ form.truckingnumber(class="form-control border-input is-invalid", readonly="")}}
+                                <i class="form-group__bar"></i>
+                                <div class="invalid-feedback">
+                                    {% for error in form.truckingnumber.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.truckingnumber(class="form-control border-input", readonly="")}}
+                                <i class="form-group__bar"></i>
+                                {% endif %}
+                            </div>
+                                
+            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Pays de provenance</label>
+                                {% if form.provenance.errors %}
+                                {{ form.provenance(class="form-control border-input is-invalid")}}
+                                <i class="form-group__bar"></i>
+                                <div class="invalid-feedback">
+                                    {% for error in form.provenance.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.provenance(class="form-control border-input")}}
+                                <i class="form-group__bar"></i>
+                                {% endif %}
+                            </div>
+                            
+        
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Ville de Provenance</label>
+                            {% if form.ville.errors %}
+                            {{ form.ville(class="form-control border-input is-invalid")}}
+                            <i class="form-group__bar"></i>
+                            <div class="invalid-feedback">
+                                {% for error in form.ville.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.ville(class="form-control border-input")}}
+                            <i class="form-group__bar"></i>
+                            {% endif %}
+                        </div>
+        
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                                <label>Pays de destination</label>
+                                {% if form.destination.errors %}
+                                {{ form.destination(class="form-control border-input is-invalid")}}
+                                <i class="form-group__bar"></i>
+                                <div class="invalid-feedback">
+                                    {% for error in form.destination.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.destination(class="form-control border-input")}}
+                                <i class="form-group__bar"></i>
+                                {% endif %}
+                        </div>
+    
+                </div>
+            </div>
+
+                
+                <div class="text-center">
+                        <button class="btn btn-outline-info btn-md" id="submit" name="submit" type="submit">
+                                <i class="ti-layout-column2-alt"></i> Modification
+                        </button>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

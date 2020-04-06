@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 30px 80px 30px  80px">
+            
+        <div class="header">
+            <h4 class="title">Les utilisateurs</h4>
+            <p class="category">Les droits d'acces dépend de la fonction.</p>
+
+            <a href="{{ url_for('user.ajuser')}}" class="btn btn-warning"> <i class="ti-user"></i> Ajouter utilisateur </a>
+
+        </div>
+
+       
+        {% with messages= get_flashed_messages(with_categories=true) %}
+            {% if messages  %}
+                {% for category, message in messages %}
+                    <div class="alert text-center alert-{{ category }}">
+                        <b>{{ message }}</b>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        <div class="content table-responsive table-full-width">
+            <table class="table table-striped">
+
+                <thead>
+                    <th>Noms</th>
+                    <th>E-mail</th>
+                    <th class="text-center">Mot de passe</th>
+                    <th  class="text-center">Fonction</th>
+                    <th  class="text-center">Statut</th>
+                    <th  class="text-center">Action</th>
+                </tr></thead>
+                <tbody>
+                    {% for listes in liste%}
+                        <tr>
+                            <td> {{ ' {} {} {} '.format(listes.nom, listes.post_nom, listes.prenom)  }} </td>
+                            <td> {{ listes.username }} </td>
+                            <td class="text-center"> <a href="{{ url_for('user.passuser', user_id=listes.id)}}">************ <i class="ti-pencil-alt"></i></a> </td>
+                            <td  class="text-center"> {{ listes.role}} </td>
+                            {% if listes.statut==True%}
+                            <td  class="text-center"><a href="{{ url_for('user.statutuser', user_id=listes.id)}}  " class="btn btn-success"> <i class="ti-unlock"></i> </a></td>
+                            {% else %}
+                            <td  class="text-center"><a href="{{ url_for('user.statutuser', user_id=listes.id)}}" class="btn btn-danger"> <i class="ti-lock"></i> </a></td>
+                            {% endif%}
+                            <td  class="text-center"> <a href="{{ url_for('user.edituser', user_id=listes.id)}}" class="btn btn-warning"> <i class="ti-pencil-alt"></i> </a> </td>
+                        </tr>
+                    {% endfor %}
+ 
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin-top: 100px; margin-bottom: 150px; ">
+        <div class="header">
+            <h4 class="title">Livraison colis (N°:{{truck}}) </h4>
+        </div>
+        <div class="content">
+                {% with messages= get_flashed_messages(with_categories=true) %}
+                {% if messages  %}
+                    {% for category, message in messages %}
+                        <div class="alert text-center alert-{{ category }}">
+                            <b>{{ message }}</b>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data" >
+                {{ form.csrf_token }}
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                                <label>Date de livraison</label>
+                                {% if form.date_livraison.errors %}
+                                {{ form.date_livraison(class="form-control border-input is-invalid")}}
+                                <i class="form-group__bar"></i>
+                                <div class="invalid-feedback">
+                                    {% for error in form.date_livraison.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.date_livraison(class="form-control border-input")}}
+                                <i class="form-group__bar"></i>
+                                {% endif %}
+                        </div>
+    
+                    </div>
+                </div>
+
+                
+                <div class="text-center">
+                        <button class="btn btn-outline-info btn-md" id="submit" name="submit" type="submit">
+                                <i class="ti-truck"></i> Date de livraison
+                        </button>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

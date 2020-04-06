@@ -1,0 +1,178 @@
+{% extends "fret.html" %}
+{% block body %}
+
+
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2> {{page}} </h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href=" {{url_for('plate.index')}} ">Accueil</a></li>
+                    <li class="breadcrumb-item active">{{page}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Why us -->
+
+
+<section id="why_us">
+    <div class="container text-center" style="margin-top: 50px;">
+        <div class="row">
+            <div class="col-md-12 ">
+                <div class="head_title">
+                    <h2>SUIVIS DE COLIS</h2>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-6">
+                <div class="why_us_item">
+                    <span class="fa fa-truck"></span>
+
+                </div>
+            </div>
+
+        </div>
+        <br><br> <br>
+        <div class="row" style="margin-bottom: 20px;">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <form class="margin-bottom:10px;" method="POST">
+                    {{ form.csrf_token }}
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+
+                                {% if form.numero.errors %}
+                                {{ form.numero(class="form-control input-lg  is-invalid", placeholder="Numero de suivis")}}
+                                <i class="form-group__bar"></i>
+                                <div class="invalid-feedback">
+                                    {% for error in form.numero.errors %}
+                                    <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.numero(class="form-control input-lg ", placeholder="Numero de suivis")}}
+                                <i class="form-group__bar"></i>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                    <button type="submit" name="submit" class="btn btn-md btn-warning">
+                        Chercher
+                    </button>
+                </form>
+
+                {% if trucking_id_client!='requete' %}
+                
+                    {% with messages= get_flashed_messages(with_categories=true) %}
+                        {% if messages  %}
+                        {% for category, message in messages %}
+                        <div class="alert text-center alert-{{ category }}">
+                            <b>{{ message }}</b>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                
+
+
+                {% else %}
+                <div class="row">
+                    <div class="col-md-12"></div>
+                        
+                            
+                                <div class="col-md-12">
+                                    <h4 class="title text-center">BORDEREAUX D'EXPEDITION </h4>
+                                </div>
+                        
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tbody>
+
+                                        <tr>
+                                            <td class="text-left">Numéro de suivi: </td>
+                                            <td> <b>{{truck.tracking_number }}</b></td>
+                                            <td> </td>
+                                            <td>
+                                                {% if truck.date_livraison == None and truck.statut== 0 %}
+                                                <a class="btn btn-sm btn-danger"> En route </a>
+                                                {% else %}
+                                                <a class="btn btn-sm btn-success"> Livré </a>
+                                                {% endif %}
+
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="text-left">Provenance: </td>
+                                            <td class="text-left">{{truck.provenance }}
+                                                ({{truck.ville_provenance}}): </td>
+                                            <td>Jour et date d'envoi: </td>
+                                            <td> {{truck.date_envoi.strftime('%d/%m/%Y %H:%M:%S')}} </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="text-left">Destination: </td>
+                                            <td class="text-left">{{truck.destination }}: </td>
+                                            <td>Jour et date livraison: </td>
+                                            <td>
+                                                {% if truck.date_livraison == None and truck.statut== 0 %}
+                                                En transit
+                                                {% else %}
+                                                {{truck.date_livraison.strftime('%d/%m/%Y %H:%M:%S')}}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                            <br>
+                            <h4>Transit</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        {% for transit in track_transit %}
+                                        <tr>
+                                            <td class="text-left"> {{ transit.en_transit }}
+                                                ({{transit.ville_transit}})</td>
+                                            <td> {{ transit.date_envoi_transit.strftime('%d/%m/%Y %H:%M:%S') }}
+                                            </td>
+                                            <td>
+                                                <p class="text-justify">
+                                                    {{ transit.resume }}
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        
+                    </div>
+                </div>
+
+
+                {% endif %}
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+
+    </div>
+</section><!-- Why us end -->
+{% endblock %}

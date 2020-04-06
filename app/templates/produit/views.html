@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 30px 0px 30px  0px">
+            
+        <div class="header">
+            <h4 class="title">Les produits de l'entreprise</h4>
+            <br>
+            <a href="{{ url_for('produit.ajoutprod')}}" class="btn btn-primary"> <i class="ti-view-list-alt "></i> Ajouter produit </a>
+        </div>
+        <br>
+       
+        {% with messages= get_flashed_messages(with_categories=true) %}
+            {% if messages  %}
+                {% for category, message in messages %}
+                    <div class="alert text-center alert-{{ category }}">
+                        <b>{{ message }}</b>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        <div class="content table-responsive table-full-width">
+            <table class="table table-striped">
+
+                <thead>
+                    <th>Code</th>
+                    <th>Avatar</th>
+                    <th>Nom produit</th>
+                    <th class="text-center">Prix</th>
+                    <th  class="text-center">Catégorie</th>
+                    <th  class="text-center">Classification</th>
+                    <th  class="text-center">Statut</th>
+                    <th  class="text-center">Action</th>
+                </tr></thead>
+                <tbody>
+                    {% for listes in liste.items%}
+                        <tr>
+                            <td> {{ listes.code }} </td>
+                            <td> <img height="60px" width="60px" class="img img-resposive img-circle box-shadow--5dp" src=" {{ url_for('static', filename='produit/{}'.format(listes.img_url))  }} " alt="produit"> </td>
+                            <td> {{ listes.nom }} </td>
+                            <td class="text-center"> ${{ listes.prix_p }} </td>
+                            <td  class="text-center"> {{ listes.categorie_produit.nom }} </td>
+                            <td  class="text-center"> {{ listes.categorie_produit.type_categorie.nom }} </td>
+                            {% if listes.statut==True%}
+                            <td  class="text-center"><a href="{{ url_for('produit.statutpro', pro_id=listes.id)}}  " class="btn btn-success"> <i class="ti-unlock"></i> </a></td>
+                            {% else %}
+                            <td  class="text-center"><a href="{{ url_for('produit.statutpro', pro_id=listes.id)}}" class="btn btn-danger"> <i class="ti-lock"></i> </a></td>
+                            {% endif%}
+                            <td  class="text-center"> <a href="{{ url_for('produit.editpro', pro_id=listes.id)}}" class="btn btn-warning"> <i class="ti-pencil-alt"></i> </a>  
+                            </td>
+                        
+                        </tr>
+                        
+                        
+                    {% endfor %}
+                        
+                </tbody>
+            </table>
+
+            <div class="box-footer clearfix">
+                <div class="text-center">
+                    {% for page_num in liste.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if liste.page==page_num %}
+                            <a class="btn btn-info mb-4" href="{{ url_for('produit.lipro', page=page_num) }}">{{ page_num}}</a>
+                        {% else %}
+                            <a class="btn btn-outline-info mb-4" href="{{ url_for('produit.lipro', page=page_num) }}">{{ page_num}}</a>
+                        {% endif %}
+                    {% else %}
+                        ...
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

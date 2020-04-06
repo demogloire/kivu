@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 30px 150px 30px  150px">
+        <div class="header">
+            <h4 class="text-center title">Image du produit</h4>
+        </div>
+        <div class="content">
+                {% with messages= get_flashed_messages(with_categories=true) %}
+                {% if messages  %}
+                    {% for category, message in messages %}
+                        <div class="alert text-center alert-{{ category }}">
+                            <b>{{ message }}</b>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data" >
+                {{ form.csrf_token }}
+ 
+                <div class="row">
+                    <div class="col-md-6">
+                            <div class="form-group">
+                                    <label> <small>* image de produit</small> </label>
+                                    {% if form.file.errors %}
+                                    {{ form.file(class="file-control is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.file.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.file(class="file-control ")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            <button class="btn btn-outline-info btn-md" id="submit" name="submit" type="submit">
+                                    <i class="ti-cloud"></i> Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+
+ 
+</div>
+
+
+
+{% endblock body %}

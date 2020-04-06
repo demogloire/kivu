@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 30px 0px 30px  0px">
+            
+        <div class="header">
+            <h4 class="title">Les commandes des clients</h4>
+        </div>
+        <br>
+       
+        {% with messages= get_flashed_messages(with_categories=true) %}
+            {% if messages  %}
+                {% for category, message in messages %}
+                    <div class="alert text-center alert-{{ category }}">
+                        <b>{{ message }}</b>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        <div class="content table-responsive table-full-width">
+            <table class="table table-striped">
+                <thead>
+                    <th>Code</th>
+                    <th>Avatar</th>
+                    <th>Qte</th>
+                    <th class="text-center">Somme</th>
+                    <th class="text-center">Client</th>
+                    <th class="text-center">Date commande</th>
+                    <th class="text-center">Date Livraison</th>
+                    <th  class="text-center">Statut</th>
+                    <th  class="text-center">Action</th>
+                </tr></thead>
+                <tbody>
+                    {% for listes in liste.items%}
+                        <tr>
+                            <td> {{ listes.produit_commande.code }} </td>
+                            <td> <img height="60px" width="60px" class="img img-resposive img-circle box-shadow--5dp" src=" {{listes.produit_commande.img_url}} " alt="produit"> </td>
+                            <td> {{ listes.qte|int }} 
+                                {%if listes.qte>1 %}
+                                    {{ listes.produit_commande.mesure}}s
+                                {% else %}    
+                                    {{ listes.produit_commande.mesure }}
+                                {%endif%}
+                            </td>
+                            <td class="text-center">${{ listes.somme }}</td>
+                            <td class="text-center">{{ listes.nom_client }}</td>
+                            <td class="text-center">{{ listes.date_commande.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                            <td class="text-center">
+                                {%if listes.date_commande==listes.date_commande_liv%}
+                                    <a href="" class="btn btn-success"> <i class="ti-bell"></i> </a>
+                                {%else%}
+                                    {{ listes.date_commande_liv.strftime('%d/%m/%Y %H:%M:%S') }}
+                                {%endif%}
+                            </td>
+                            {% if listes.statut_liv==True%}
+                                <td  class="text-center"><a href="" class="btn btn-success"> <i class="ti-thumb-up"></i> </a></td>
+                            {% else %}
+                            <td  class="text-center"><a href="{{ url_for('commande.livraison_commande', commande_id=listes.id)}}" class="btn btn-danger"> <i class="ti-thumb-down"></i> </a></td>
+                            {% endif%}
+                            <td  class="text-center"> <a href="{{ url_for('commande.voir', commande_id=listes.id)}}" class="btn btn-primary"> <i class="ti-receipt"></i> </a>  
+                            </td>
+                        
+                        </tr>
+                        
+                        
+                    {% endfor %}
+                        
+                </tbody>
+            </table>
+
+            <div class="box-footer clearfix">
+                <div class="text-center">
+                    {% for page_num in liste.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if liste.page==page_num %}
+                            <a class="btn btn-info mb-4" href="{{ url_for('produit.lipro', page=page_num) }}">{{ page_num}}</a>
+                        {% else %}
+                            <a class="btn btn-outline-info mb-4" href="{{ url_for('produit.lipro', page=page_num) }}">{{ page_num}}</a>
+                        {% endif %}
+                    {% else %}
+                        ...
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

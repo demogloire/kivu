@@ -1,0 +1,162 @@
+{% extends "siteda.html" %}
+{% block body %}
+
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2> {{page}} </h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href=" {{url_for('plate.index')}} ">Accueil</a></li>
+                    <li class="breadcrumb-item active">{{page}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="shop-box-inner">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-9 col-lg-9 col-sm-12 col-xs-12 shop-content-right">
+                <div class="right-product-box">
+                    <div class="product-item-filter row">
+                        <div class="col-12 col-sm-8 text-center text-sm-left">
+                            <div class="toolbar-sorter-right">
+                                Nos produits
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4 text-center text-sm-right">
+                            <ul class="nav nav-tabs ml-auto">
+                                <li>
+                                    <a class="nav-link active" href="#grid-view" data-toggle="tab"> <i class="fa fa-th"></i> </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#list-view" data-toggle="tab"> <i class="fa fa-list-ul"></i> </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="product-categorie-box">
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade show active" id="grid-view">
+                                <div class="row">
+                                    {% if ctr_pro=="Novide"%}
+                                    {% for produits in liste.items%}
+                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                                        <div class="products-single fix box-shadow--2dp">
+                                            <div class="box-img-hover">
+                                              <div class="type-lb">
+                                                <p class="sale">Disponible</p>
+                                              </div>
+                                              <img src=" {{ url_for('static', filename='produit/{}'.format(produits.img_url))  }} " class="img-fluid" alt="Image">
+                                              <div class="mask-icon">
+                                                <ul>
+                                                  <li><a href="  {{ url_for('plate.commandepro', code=produits.code)}} " data-toggle="tooltip" data-placement="right" title="" data-original-title="View"><i
+                                                        class="fas fa-eye"></i></a></li>
+                                                </ul>
+                                                <a class="cart" href="{{ url_for('plate.commandepro', code=produits.code)}}">Commander</a>
+                                              </div>
+                                            </div>
+                                            <div class="why-text">
+                                              <h4> {{produits.nom}} </h4>
+                                              <h5> ${{produits.prix_p}}/{{produits.mesure}}</h5>
+                                            </div>
+                                          </div>
+                                    </div>
+                                    {%endfor%}
+                                    {%else%}
+                                    {%endif%}
+
+                                   
+                                    
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="list-view">
+                                {% if ctr_pro=="Novide"%}
+                                {% for produits in liste.items%}
+                                <div class="list-view-box">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                                            <div class="products-single fix">
+                                                <div class="box-img-hover">
+                                                    <div class="type-lb">
+                                                        <p class="new">Disponible</p>
+                                                    </div>
+                                                    <img src="{{ url_for('static', filename='produit/{}'.format(produits.img_url))  }}" class="img-fluid" alt="Image">
+                                                    <div class="mask-icon">
+                                                        <ul>
+                                                          <li><a href="{{ url_for('plate.commandepro', code=produits.code)}}" data-toggle="tooltip" data-placement="right" title="" data-original-title="View"><i
+                                                                class="fas fa-eye"></i></a></li>
+                                                        </ul>
+                                                        <a class="cart" href="{{ url_for('plate.commandepro', code=produits.code)}}">Commander</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 col-lg-8 col-xl-8">
+                                            <div class="why-text full-width">
+                                                <h4> {{produits.nom}} </h4>
+                                                <h5> ${{produits.prix_p}}/{{produits.mesure}}</h5>
+                                                <p>{{produits.description|safe}} </p>
+                                                <a class="btn hvr-hover" href="{{ url_for('plate.commandepro', code=produits.code)}}">Commander</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {%endfor%}
+                                {%else%}
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-footer clearfix">
+                    <div class="text-center">
+                        {% for page_num in liste.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                        {% if page_num %}
+                            {% if liste.page==page_num %}
+                                <a class="btn btn-info mb-4" href="{{ url_for('plate.produit', page=page_num) }}">{{ page_num}}</a>
+                            {% else %}
+                                <a class="btn btn-outline-info mb-4" href="{{ url_for('plate.produit', page=page_num) }}">{{ page_num}}</a>
+                            {% endif %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-sm-12 col-xs-12 sidebar-shop-left">
+                <div class="product-categori">
+                    <div class="search-product">
+                        <form action="#">
+                            <input class="form-control" placeholder="Chercher un produit..." type="text">
+                            <button type="submit"> <i class="fa fa-search"></i> </button>
+                        </form>
+                    </div>
+                    <div class="filter-sidebar-left">
+                        <div class="title-left">
+                            <h3>Catégories</h3>
+                        </div>
+                        <div class="list-group list-group-collapse list-group-sm list-group-tree" id="list-group-men" data-children=".sub-men">
+                            {%if typever!="Vide"%}
+                                {%if categoriever !="Vide" %}
+                                    {%for categorie in categorie_app%}
+                                        <a href="{{url_for('plate.produit_categorie', cat_int=categorie.id)}}" class="list-group-item list-group-item-action"> {{categorie.nom}}</a>
+                                    {%endfor%}
+                                {%endif%}
+                            {%endif%}
+                        
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

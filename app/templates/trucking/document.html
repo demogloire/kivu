@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin-top: 40px; margin-bottom: 150px; ">
+        <div class="header">
+            <div class="content table-responsive table-full-width">
+            <div class="row">
+               <div class="col-md-12">
+                <h4 class="title text-center">BORDEREAU D'EXPEDITION </h4>
+            </div> 
+            </div>
+            
+            <table class="table table-striped">
+            <tbody>
+
+                <tr>
+                    <td>Numéro de suivi: </td>
+                    <td>  <a href="  {{ url_for('trucking.trackdocmod', transit_id=truck.id)}} "> <b>{{truck.tracking_number }}</b></a></td>
+                    <td> </td>
+                    <td> 
+                        {%if truck.encours == 1 %}
+                            {% if truck.date_livraison == None and truck.statut== 0 %}
+                            <a class="btn btn-sm btn-danger">  <i class="ti-truck"></i>  </a>
+                            {% else %}
+                            <a class="btn btn-sm btn-success">  <i class="ti-check"></i>  </a>
+                            {% endif %}
+                        {% else %}
+                        <a href="" class="badge badge-pill badge-danger"> En  traitement</a>
+                        {% endif %}
+                    
+                    </td>
+                </tr>
+                <tr>
+                    <td>Provenance: </td>
+                    <td>{{truck.provenance }} ({{truck.ville_provenance}}): </td>
+                    <td>Jour et date d'envoi: </td>
+                    <td> {{truck.date_envoi.strftime('%d/%m/%Y %H:%M:%S')}}  </td>
+                    
+                </tr>
+                <tr>
+                    <td>Destination: </td>
+                    <td>{{truck.destination }} </td>
+                    <td>Jour et date livraison: </td>
+                    <td> 
+                        {%if truck.encours == 1 %}
+
+                            {% if truck.date_livraison == None and truck.statut== 0 %}  
+                                En transit
+                            {% else %}  
+                                {{truck.date_livraison.strftime('%d/%m/%Y %H:%M:%S')}} 
+                            {% endif %}
+                        {% else %}
+                            <a href="" class="badge badge-pill badge-danger"> En  traitement</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+
+            <h4>Transit</h4>
+
+            <table class="table table-striped">
+                <tbody>
+
+
+                {% for transit in track_transit %}
+                    <tr>
+                        <td> <a href="{{ url_for('trucking.tracktransit', transit_id=truck.id)}}">{{ transit.en_transit }} ({{transit.ville_transit}})</a>  </td>
+                        <td> {{ transit.date_envoi_transit.strftime('%d/%m/%Y %H:%M:%S') }} </td>
+                        <td> <p class="text-justify">
+                            {{ transit.resume }}
+                        </p> </td>       
+                    </tr>
+                {% endfor %}
+                    
+    
+
+                </tbody>
+                </table>
+            </div>
+            
+        </div>
+        <div class="content">
+                
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

@@ -1,0 +1,71 @@
+{% extends "basein.html" %}
+
+{% block body %}
+<div class="sufee-login d-flex align-content-center flex-wrap">
+    <div class="container">
+        <div class="login-content">
+            <div class="login-logo">
+                <a href="index.html">
+                    <img class="align-content" src="{{ url_for('static',filename='logo/t.png')}}" alt="">
+                </a>
+            </div>
+            <div class="login-form">
+                    {% with messages= get_flashed_messages(with_categories=true) %}
+                    {% if messages  %}
+                        {% for category, message in messages %}
+                            <div class="alert text-center alert-{{ category }}">
+                                <b>{{ message }}</b>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    <form method="POST" enctype="multipart/form-data" >
+                    {{ form.csrf_token }}
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        {% if form.username.errors %}
+                            {{ form.username(class="form-control is-invalid", placeholder="E-mail")}}
+                            <i class="form-group__bar"></i>
+                            <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.username(class="form-control", placeholder="E-mail")}}
+                            <i class="form-group__bar"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Mot de passe</label>
+                        {% if form.password.errors %}
+                            {{ form.password(class="form-control is-invalid", placeholder="Mot de passe")}}
+                            <i class="form-group__bar"></i>
+                            <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.password(class="form-control", placeholder="Mot de passe")}}
+                            <i class="form-group__bar"></i>
+                        {% endif %}
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            {{ form.remember()}} Souvenez-vous
+                        </label>
+                        <label class="pull-right">
+                            <a href="#"></a>
+                        </label>
+
+                    </div>
+                    <button  id="submit"  name="submit" type="submit" class="btn btn-success btn-flat m-b-30 m-t-30">Connexion</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

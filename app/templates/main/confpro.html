@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin: 150px 150px 0px  150px">
+
+        <div class="content">
+          <div class="row">
+              <div class="col-lg-12">
+                    <div class="col-lg-4">
+                        <div class="text-center">
+                            <a class="btn btn-lg btn-info" href=" {{url_for('types.litype')}} "> <i class="ti-layout-grid3"></i> Classification</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="text-center">
+                            <a class="btn btn-lg btn-primary" href="{{url_for('categorie.litcate')}} "> <i class="ti-layout-column2-alt"></i> Catégorisation</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="text-center">
+                            <a class="btn btn-lg btn-danger" href="{{url_for('produit.lipro')}}"><i class="ti-view-list-alt"></i> Produit</a>
+                        </div>
+                        
+                    </div>
+              </div>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

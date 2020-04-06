@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-lg-12 col-md-12">
+    <div class="card box-shadow--4dp" style="margin-top: 40px; margin-bottom: 150px; ">
+        <div class="header">
+            <div class="content table-responsive table-full-width">
+            <div class="row">
+               <div class="col-md-4">
+                <img src=" {{url_for('static', filename='logo/t.png')}} " alt="">
+               </div>
+               <div class="col-md-6">
+                <span class="pull-left"><h4 class="title">BON DE COMMANDE </h4></span>
+                <span class="pull-right"><a href="{{ url_for('commande.annule_commande', commande_id=commande_liv_statu.id)}}" class="btn btn-danger"> <i class="ti-close"></i> </a></span>
+            </div> 
+            </div>
+            <br>
+            <table class="table table-striped">
+            <tbody>
+
+                <tr>
+                    <td>Nom du client: </td>
+                    <td>  <b>{{commande_liv_statu.nom_client }}</b></td>
+                </tr>
+
+                <tr>
+                    <td>Contact: </td>
+                    <td>{{commande_liv_statu.tel }}, {{commande_liv_statu.mail}}</td>
+                </tr>
+                <tr>
+                    <td>Adresse physique: </td>
+                    <td>{{commande_liv_statu.adr }}</td>
+                </tr>
+
+                <tr>
+                    <td>Date de la commande: </td>
+                    <td>{{ commande_liv_statu.date_commande.strftime('%d/%m/%Y %H:%M:%S') }} </td>
+                </tr>
+                <tr>
+                    <td>Date de livraison: </td>
+                    <td> 
+                        {%if commande_liv_statu.date_commande==commande_liv_statu.date_commande_liv%}
+                            <a href="" class="btn btn-success"> <i class="ti-bell"></i> </a>
+                        {%else%}
+                            {{ commande_liv_statu.date_commande_liv.strftime('%d/%m/%Y %H:%M:%S') }}
+                        {%endif%}
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+
+            <h4>Commande</h4>
+
+            <table class="table table-striped">
+                <tbody>
+                    <thead>
+                        <th>Code</th>
+                        <th>Avatar</th>
+                        <th class="text-center">Qte</th>
+                        <th class="text-center">Prix unitaire</th>
+                        <th class="text-center">Prix total</th>
+                    </tr></thead>
+                    <tr>
+                        <td> {{ commande_liv_statu.produit_commande.code }} </td>
+                        <td> <img height="60px" width="60px" class="img img-resposive img-circle box-shadow--5dp" src=" {{commande_liv_statu.produit_commande.img_url}} " alt="produit"> </td>
+                        <td class="text-center"> {{ commande_liv_statu.qte|int }} 
+                            {%if commande_liv_statu.qte>1 %}
+                                {{ commande_liv_statu.produit_commande.mesure}}s
+                            {% else %}    
+                                {{ commande_liv_statu.produit_commande.mesure }}
+                            {%endif%}
+                        </td>
+                        <td class="text-center">${{ commande_liv_statu.produit_commande.prix_p }}</td>
+                        <td class="text-center">${{ commande_liv_statu.somme }}</td>
+                    </tr>
+
+                </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock body %}
