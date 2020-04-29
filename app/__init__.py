@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 #from wtf_tinymce import wtf_tinymce
 from flask_simplemde import SimpleMDE
 from flaskext.markdown import Markdown
+from flask_marshmallow import Marshmallow
 
 #Importation des configuration de l'application sur le developpement de l'application
 from config import app_config
@@ -16,7 +17,7 @@ from config import app_config
 db = SQLAlchemy()
 login_manager = LoginManager()
 bcrypt = Bcrypt()
-
+ma = Marshmallow()
 #Structure de l'application
 
 def create_app(config_name):
@@ -35,6 +36,8 @@ def create_app(config_name):
     login_manager.init_app(app)
     Markdown(app)
     migrate = Migrate(app, db)
+    
+    
     #wtf_tinymce.init_app(app)
     
 
@@ -98,6 +101,10 @@ def create_app(config_name):
     #Les commandes
     from .commande import commande as commande_blueprint
     app.register_blueprint(commande_blueprint)
+
+    #Les commandes
+    from .api import apis as api_blueprint
+    app.register_blueprint(api_blueprint)
 
     return app
 

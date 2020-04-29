@@ -1,11 +1,14 @@
-from app import db, login_manager
+from app import db, login_manager, ma
 from datetime import datetime, date
 from flask_login import UserMixin, current_user
 from sqlalchemy.orm import backref
+from marshmallow_sqlalchemy import ModelSchema
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
 
 class Types(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -59,6 +62,7 @@ class Produit(db.Model):
     categorie_id = db.Column(db.Integer, db.ForeignKey('categorie.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     commandes = db.relationship('Commandes', backref='produit_commande', lazy='dynamic')
+    paniers = db.relationship('Panier', backref='produit_panier', lazy='dynamic')
     statut = db.Column(db.Boolean, default=False) 
     def __repr__(self):
         return ' {} '.format(self.nom)
@@ -80,7 +84,7 @@ class Article(db.Model):
 
 class Commandes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    qte = db.Column(db.DECIMAL(precision=10, scale=2, asdecimal=False))
+    qte = db.Column(db.Integer)
     somme = db.Column(db.DECIMAL(precision=10, scale=2, asdecimal=False))
     nom_client=db.Column(db.String(128))
     tel=db.Column(db.String(128))
@@ -92,6 +96,7 @@ class Commandes(db.Model):
     date_commande_liv=db.Column(db.DateTime, nullable=False, default=datetime.utcnow )
     statut_liv=db.Column(db.Boolean, default=False) 
     annul_liv=db.Column(db.Boolean, default=False) 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -101,9 +106,17 @@ class User(db.Model, UserMixin):
     role = db.Column(db.String(128))
     username = db.Column(db.String(128))
     password = db.Column(db.String(128))
+    tel=db.Column(db.String(128))
+    mail=db.Column(db.String(128))
+    adr=db.Column(db.String(128))
+    public_id=db.Column(db.String(50),unique=True )
     statut=db.Column(db.Boolean, default=False) 
     produits = db.relationship('Produit', backref='user_produit', lazy='dynamic')
     articles = db.relationship('Article', backref='user_article', lazy='dynamic')
+    factures = db.relationship('Facture', backref='user_facture', lazy='dynamic')
+    commandess = db.relationship('Commandes', backref='user_commande', lazy='dynamic')
+    
+
 
     def __repr__(self):
         return ' {} '.format(self.nom)
@@ -115,4 +128,53 @@ class Devis(db.Model):
     datedevis=db.Column(db.Date, default=date.today())
     def __repr__(self):
         return ' {} '.format(self.nom)
+
+class Facture(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code_commande = db.Column(db.String(128))
+    valeur = db.Column(db.DECIMAL(precision=30, scale=16, asdecimal=False))
+    datecommande=db.Column(db.Date, default=date.today())
+    statut=db.Column(db.Boolean, default=False) 
+    annul=db.Column(db.Boolean, default=False)
+    paniers = db.relationship('Panier', backref='facture_paniers', lazy='dynamic')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    def __repr__(self):
+        return ' {} '.format(self.code_commande)
+
+class Panier(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quantite = db.Column(db.Integer)
+    prix_p = db.Column(db.DECIMAL(precision=10, scale=2, asdecimal=False))
+    valeur = db.Column(db.DECIMAL(precision=10, scale=2, asdecimal=False))
+    datecommande=db.Column(db.Date, default=date.today())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    produit_id = db.Column(db.Integer, db.ForeignKey('produit.id'), nullable=False)
+    facture_id = db.Column(db.Integer, db.ForeignKey('facture.id'), nullable=False)
+    def __repr__(self):
+        return ' {} '.format(self.quantite)
+
+
+class ProduitSchema(ma.ModelSchema):
+    class Meta:
+        model= Produit
+
+class FactureSchema(ma.ModelSchema):
+    class Meta:
+        model= Facture
+
+class PanierSchema(ma.ModelSchema):
+    class Meta:
+        model= Panier
+
+class CategorieSchema(ma.ModelSchema):
+    class Meta:
+        model= Categorie
+
+class UserSchema(ma.ModelSchema):
+    class Meta:
+        model= User
+
+class CommandesSchema(ma.ModelSchema):
+    class Meta:
+        model= Commandes
 

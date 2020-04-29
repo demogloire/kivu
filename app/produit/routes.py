@@ -105,12 +105,7 @@ def upload_file():
    if form.validate_on_submit():
       file_to_upload = form.file.data
       if file_to_upload:
-         try:
-            upload_result = utilitaire.save_picture(file_to_upload)
-         except:
-            flash("Erreur de connexion",'danger')
-            session.pop('img',None)
-            return redirect(url_for('produit.lipro')) 
+         upload_result = utilitaire.save_picture(file_to_upload)
          prod_img.img_url=upload_result
          db.session.commit()
          flash("Ajout d'un nouveau produit",'success')
@@ -245,12 +240,7 @@ def upload_file_ed(pro_id):
    if form.validate_on_submit():
       file_to_upload = form.ed_file.data
       if file_to_upload:
-         try:
-            upload_result = save_picture(file_to_upload)
-         except:
-            flash("Erreur de connexion",'danger')
-            session.pop('img',None)
-            return redirect(url_for('produit.lipro')) 
+         upload_result = save_picture(file_to_upload)
          prod_img.img_url=upload_result
          db.session.commit()
          flash("Modification avec succès",'success')
