@@ -240,7 +240,7 @@ def upload_file_ed(pro_id):
    if form.validate_on_submit():
       file_to_upload = form.ed_file.data
       if file_to_upload:
-         upload_result = save_picture(file_to_upload)
+         upload_result = utilitaire.save_picture(file_to_upload)
          prod_img.img_url=upload_result
          db.session.commit()
          flash("Modification avec succès",'success')
