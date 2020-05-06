@@ -90,6 +90,8 @@ def produit():
    categorie_app=Categorie.query.filter_by(type_id=type_application.id, statut=True)
    if categorie_app is not None:
       categoriever="Novide"
+   
+   print(produit_page)
       
    return render_template('plateforme/produits.html',categoriever=categoriever,typever=typever, categorie_app=categorie_app, page=page_actuelle, title=title, ctr_pro=ctr_pro, liste=produit_page)
 

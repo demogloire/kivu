@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
   <title>Ethiopian Fret</title>
@@ -17,16 +17,37 @@
   <link rel="stylesheet" href="{{url_for('static',filename='fret/css/owl.theme.default.min.css')}}" />
   <link rel="stylesheet" href="{{url_for('static',filename='fret/css/bootstrap-datepicker.css')}}" />
   <link rel="stylesheet" href="{{url_for('static',filename='fret/fonts/flaticon/font/flaticon.css')}}" />
-
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
   <link rel="stylesheet" href="{{url_for('static',filename='fret/css/aos.css')}}" />
   <link rel="stylesheet" href="{{url_for('static',filename='fret/css/style.css')}}" />
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="{{url_for('static',filename='google-style.css')}}" /> 
+  <link rel="stylesheet" href="{{url_for('static',filename='flag/css/flag-icon.css')}}" />
 
 </head>
 
 <body>
 
+  
+    
+
+
   <div class="site-wrap">
 
+    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+      <div class="collapse navbar-collapse" id="navbarsExample09">
+          <ul class="navbar-nav mr-auto">
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Langue</a>
+                  <div class="dropdown-menu" aria-labelledby="dropdown09">
+                      <a href="{{url_for('plate.suivis')}}#googtrans(fr|en)" class="lang-en lang-select dropdown-item" data-lang="en"><span class="flag-icon flag-icon-us"></span> Anglais</a>
+                  </div>
+              </li>
+          </ul>
+
+      </div>
+  </nav>
     <div class="site-mobile-menu">
       <div class="site-mobile-menu-header">
         <div class="site-mobile-menu-close mt-3">
@@ -41,7 +62,7 @@
         <div class="row align-items-center">
 
           <div class="col-12 col-xl-2">
-            <h1 class="mb-0"><a href="index.html" class="text-white h4 mb-0">Ethiopian Fret</a></h1>
+            <h1 class="mb-0"><a href=" {{url_for('plate.suivis')}} " class="text-white h4 mb-0">Ethiopian Fret</a></h1>
           </div>
           <div class="col-12 col-md-10 d-none d-xl-block">
             <nav class="site-navigation position-relative text-right" role="navigation">
@@ -685,6 +706,40 @@
 
 
   </div>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'fr', layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT}, 'google_translate_element');
+    }
+
+    function triggerHtmlEvent(element, eventName) {
+      var event;
+      if (document.createEvent) {
+        event = document.createEvent('HTMLEvents');
+        event.initEvent(eventName, true, true);
+        element.dispatchEvent(event);
+      } else {
+        event = document.createEventObject();
+        event.eventType = eventName;
+        element.fireEvent('on' + event.eventType, event);
+      }
+    }
+
+    jQuery('.lang-select').click(function() {
+      var theLang = jQuery(this).attr('data-lang');
+      jQuery('.goog-te-combo').val(theLang);
+
+      //alert(jQuery(this).attr('href'));
+      window.location = jQuery(this).attr('href');
+      location.reload();
+
+    });
+
+</script>
+<script>
+    $(".skiptranslate").hide();
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
   <script src="{{url_for('static',filename='fret/js/jquery-3.3.1.min.js')}}"></script>
   <script src="{{url_for('static',filename='fret/js/jquery-migrate-3.0.1.min.js')}}"></script>
   <script src="{{url_for('static',filename='fret/js/jquery-ui.js')}}"></script>
@@ -848,6 +903,7 @@
 
   </div>
   </div>
+
   <script>
     $(document).ready(function () {
       $("#envoi").modal("show");

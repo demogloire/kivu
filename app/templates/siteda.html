@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <!-- Basic -->
 
 <head>
@@ -13,7 +13,7 @@
     <!-- Site Metas -->
     <title>Kivu Exchange Campuny Sarl</title>
     <meta name="keywords" content="">
-    <meta name="description" content="">
+    <meta name="description" content="Kivu Exchange, Ethiopian fret">
     <meta name="author" content="Kivu Exchange Company">
     
     <!-- Site Icons -->
@@ -30,9 +30,14 @@
     <link rel="stylesheet" href="{{url_for('static',filename='plateforme/css/custom.css')}}" />
     <link rel="stylesheet" href="{{url_for('static',filename='css/otherstyle.css')}}" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  -->
+    <link rel="stylesheet" href="{{url_for('static',filename='google-style.css')}}" />
+    <link rel="stylesheet" href="{{url_for('static',filename='flag/css/flag-icon.css')}}" />
 </head>
 
 <body>
+
     <!-- Start Main Top -->
     {% include'elements/plateforme/maintop.html'%}
     <!-- End Main Top -->
@@ -136,6 +141,11 @@
 
     <a href="#" id="back-to-top" title="Back to top" style="display: none;">&uarr;</a>
 
+
+    
+    
+
+
     <!-- ALL JS FILES -->
     <script src="{{url_for('static',filename='plateforme/js/jquery-3.2.1.min.js')}}"></script>
     <script src="{{url_for('static',filename='plateforme/js/popper.min.js')}}"></script>
@@ -153,6 +163,44 @@
     <script src="{{url_for('static',filename='plateforme/js/form-validator.min.js')}}"></script>
     <script src="{{url_for('static',filename='plateforme/js/contact-form-script.js')}}"></script>
     <script src="{{url_for('static',filename='plateforme/js/custom.js')}}"></script>
+
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'fr', layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT}, 'google_translate_element');
+        }
+    
+        function triggerHtmlEvent(element, eventName) {
+          var event;
+          if (document.createEvent) {
+            event = document.createEvent('HTMLEvents');
+            event.initEvent(eventName, true, true);
+            element.dispatchEvent(event);
+          } else {
+            event = document.createEventObject();
+            event.eventType = eventName;
+            element.fireEvent('on' + event.eventType, event);
+          }
+        }
+    
+        jQuery('.lang-select').click(function() {
+          var theLang = jQuery(this).attr('data-lang');
+          jQuery('.goog-te-combo').val(theLang);
+    
+          //alert(jQuery(this).attr('href'));
+          window.location = jQuery(this).attr('href');
+          location.reload();
+    
+        });
+
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        $(".skiptranslate").hide();
+    </script>
+
+
+
 </body>
 
 </html>
