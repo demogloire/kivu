@@ -35,7 +35,7 @@
 
   <div class="site-wrap">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+    <nav  id="ba" class="navbar navbar-expand-lg navbar-light bg-light rounded">
       <div class="collapse navbar-collapse" id="navbarsExample09">
           <ul class="navbar-nav mr-auto">
               <li class="nav-item dropdown">
@@ -48,6 +48,7 @@
 
       </div>
   </nav>
+
     <div class="site-mobile-menu">
       <div class="site-mobile-menu-header">
         <div class="site-mobile-menu-close mt-3">
@@ -907,6 +908,7 @@
   <script>
     $(document).ready(function () {
       $("#envoi").modal("show");
+      $("#ba").hide();
     });
   </script>
   {%endif%}
