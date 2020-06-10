@@ -1,4 +1,5 @@
 import os
+import json
 from flask import jsonify, request, make_response
 from .. import db, bcrypt
 from ..models import User, Produit, ProduitSchema, UserSchema, Commandes, CommandesSchema, Facture, Panier, FactureSchema, PanierSchema, Categorie, CategorieSchema 
@@ -7,7 +8,8 @@ import uuid
 import jwt
 import datetime
 from functools import wraps
-from app.api.function_api import token_required, codecommande
+from app.api.function_api import token_required, codecommande, DecimalEncoder, produit_du_panier
+
 #from flask_login import login_user, current_user, logout_user, login_required
 from . import apis
 from app import create_app
@@ -44,17 +46,6 @@ def ajouterutilisateur():
     return jsonify({'message':'success'})
 
 
-#Listage des utilisateurs
-@apis.route('/utilisateur',methods=['GET'])
-@token_required
-def lesutilisateur(current_user):
-    """ Cette fonction retourne la liste des utilisateurs dans la variable utilisateurs """
-    user_schema = UserSchema()
-    users_schema = UserSchema(many=True)
-    user_all=users_schema.dump(User.query.all()) 
-    return jsonify({'utilisateurs':user_all})
-
-
 #Liste des produits en exposition
 @apis.route('/produit',methods=['GET'])
 @token_required
@@ -63,7 +54,28 @@ def produit(current_user):
     produit_schema = ProduitSchema()
     produits_schema = ProduitSchema(many=True)
     produit_all=produits_schema.dump(Produit.query.filter_by(statut=True).all()) 
-    return jsonify({'produits':produit_all})
+    #Les produits en de la catélogues
+    tous_les_produit=Produit.query.filter_by(statut=True).all()
+    #Liste des produits
+    produits=[]
+
+    nbre_panier=produit_du_panier()
+
+    for produit in tous_les_produit:
+        p={
+            'id': produit.id,
+            'nom': produit.nom,
+            'prix_p':produit.prix_p,
+            'code':produit.code,
+            'img_url':produit.img_url,
+            'description_android':produit.description_android,
+            'mesure': produit.mesure,
+            'categori_id':produit.categorie_produit.id,
+            'nom_categorie':produit.categorie_produit.nom,
+        }
+        produits.insert(0,p)
+
+    return jsonify({'produits':produits,'nbre_panier':nbre_panier})
 
 
 #utilisateur encours d'utilisation
@@ -74,13 +86,14 @@ def utilisateur(current_user, public_id):
         dans le cas contraire elle retourne une erreur avec la variable de contrôle
         control_process: False
     """
+    nbre_panier=produit_du_panier()
     user_schema = UserSchema()
     users_schema = UserSchema(many=True)
     verifcation_user_profil=User.query.filter_by(public_id=public_id).first()
     if verifcation_user_profil is None :
         return jsonify({'message':"Aucun utilisateur associer","control_process":False})
     user_one=user_schema.dump(verifcation_user_profil) 
-    return jsonify({'un_utilisateur':user_one})
+    return jsonify({'un_utilisateur':user_one,'nbre_panier':nbre_panier})
 
 
 #Ajout au panier
@@ -97,18 +110,20 @@ def produit_vente(current_user, id):
 
     produit_schema = ProduitSchema()
     produits_schema = ProduitSchema(many=True)
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
 
     verifcation_porduit_vente=Produit.query.filter_by(id=id).first()
     if verifcation_porduit_vente is None :
-        return jsonify({'message':"Ce produit n'existe pas","control_process":False})
+        return jsonify({'message':"Ce produit n'existe pas","control_process":False,'nbre_panier':nbre_panier})
     else:
         commande_ajout=Commandes.query.filter_by(user_id=current_user.id, produit_id=id).first()
         if commande_ajout is None:
             valeur_commande= float(data['qte']) * float(verifcation_porduit_vente.prix_p)
-            enregistrement_commande=Commandes(qte=data['qte'], somme=valeur_commande, user_id=current_user.id, produit_id=id)
+            enregistrement_commande=Commandes(prix_p=verifcation_porduit_vente.prix_p,qte=data['qte'], somme=valeur_commande, user_id=current_user.id, produit_id=id)
             db.session.add(enregistrement_commande)
             db.session.commit()
-            return jsonify({'message':"Ajout au panier avec succès","control_process":True})
+            return jsonify({'message':"Ajout au panier avec succès","control_process":True,'nbre_panier':nbre_panier})
         else:
             valeur_commande_entree= float(data['qte']) * float(verifcation_porduit_vente.prix_p)
             qte_nouvelle = data['qte']
@@ -116,8 +131,8 @@ def produit_vente(current_user, id):
             commande_ajout.qte=qte_nouvelle
             commande_ajout.somme=valeur_commande_nouvelle
             db.session.commit()
-            return jsonify({'message':"Ajout au panier avec succès","control_process":True})
-    return jsonify({'message':'Verifier les information',"control_process":False })
+            return jsonify({'message':"Ajout au panier avec succès","control_process":True,'nbre_panier':nbre_panier})
+    return jsonify({'message':'Verifier les information',"control_process":False,'nbre_panier':nbre_panier})
 
 
 #Ajout au panier
@@ -127,16 +142,19 @@ def produit_suprimer(current_user, id):
     """ Cette fonction retourne une variable control_process: True en cas de réussité du processus
         dans le cas contraire
     """
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
+
     if not id:
-        return jsonify({'message':"Vérifier les parametres","control_process":False})
+        return jsonify({'message':"Vérifier les parametres","control_process":False,'nbre_panier':nbre_panier})
     verifcation_porduit_vente=Produit.query.filter_by(id=id).first()
     if verifcation_porduit_vente is None :
-        return jsonify({'message':"Ce produit n'existe pas","control_process":False})
+        return jsonify({'message':"Ce produit n'existe pas","control_process":False,'nbre_panier':nbre_panier})
     else:
         commande_ajout=Commandes.query.filter_by(user_id=current_user.id, produit_id=id).delete()
         db.session.commit()
-        return jsonify({'message':"Suppression avec success","control_process":True})
-    return jsonify({'message':'Verifier les information',"control_process":False })
+        return jsonify({'message':"Suppression avec success","control_process":True,'nbre_panier':nbre_panier})
+    return jsonify({'message':'Verifier les information',"control_process":False,'nbre_panier':nbre_panier })
 
 #Diminution de la vente
 @apis.route('/produit_panier_moins/<int:id>',methods=['POST','GET','PUT'])
@@ -147,15 +165,18 @@ def produit_vente_moins(current_user, id):
     """
     data=request.get_json()
 
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
+
     if not id:
-        return jsonify({'message':"Vérifier les parametres","control_process":False})
+        return jsonify({'message':"Vérifier les parametres","control_process":False,'nbre_panier':nbre_panier})
 
     produi_schema = ProduitSchema()
     produits_schema = ProduitSchema(many=True)
 
     verifcation_porduit_vente=Produit.query.filter_by(id=id).first()
     if verifcation_porduit_vente is None :
-        return jsonify({'message':"Ce produit n'existe pas","control_process":False})
+        return jsonify({'message':"Ce produit n'existe pas","control_process":False,'nbre_panier':nbre_panier})
     else:
         commande_ajout=Commandes.query.filter_by(user_id=current_user.id, produit_id=id).first()
         if commande_ajout is None:
@@ -163,7 +184,7 @@ def produit_vente_moins(current_user, id):
             enregistrement_commande=Commandes(qte=data['qte'], somme=valeur_commande, user_id=current_user.id, produit_id=id)
             db.session.add(enregistrement_commande)
             db.session.commit()
-            return jsonify({'message':"Ajout au panier avec succès","control_process":True})
+            return jsonify({'message':"Ajout au panier avec succès","control_process":True,'nbre_panier':nbre_panier})
         else:
             valeur_commande_entree= float(data['qte']) * float(verifcation_porduit_vente.prix_p)
             if commande_ajout.qte > data['qte'] :
@@ -172,10 +193,10 @@ def produit_vente_moins(current_user, id):
                 commande_ajout.qte=qte_nouvelle
                 commande_ajout.somme=valeur_commande_noubelle
                 db.session.commit()
-                return jsonify({'message':"Diminution au panier avec succès","control_process":True})
+                return jsonify({'message':"Diminution au panier avec succès","control_process":True,'nbre_panier':nbre_panier})
             else:
-                return jsonify({'message':'La quantité est superieur à la quantité disponible',"control_process":False })
-    return jsonify({'message':'Verifier les information',"control_process":False })
+                return jsonify({'message':'La quantité est superieur à la quantité disponible',"control_process":False,'nbre_panier':nbre_panier })
+    return jsonify({'message':'Verifier les information',"control_process":False,'nbre_panier':nbre_panier })
 
 
 #Liste le panier des produits
@@ -184,17 +205,38 @@ def produit_vente_moins(current_user, id):
 def panier(current_user):
     """ Cette fonction retourne le panier du client avec la veleur totale de l'utilisateur """
     valeur_produit_panier=[]
+    panier=[]
+    nombre_panier=[]
+
     commandes_schema = CommandesSchema(many=True)
     commandes_client=Commandes.query.filter_by(user_id=current_user.id).all()
+    #Ajout des elements dans le panier
+    for p in commandes_client:
+        p={
+            'id': p.produit_commande.id,
+            'nom_produit': p.produit_commande.nom,
+			'url_image':  p.produit_commande.img_url,
+			'categorie' : p.produit_commande.categorie_produit.nom,
+			'qte': p.qte,
+			'somme': p.somme,
+        }
+        p=json.dumps(p, cls=DecimalEncoder)
+        panier.insert(0,p)
+    #Nom
+    nbr_produit_panier=len(panier)
+    nbr_produit_panier=nbr_produit_panier
+
     if commandes_client==[]:
         return jsonify({'message':'Aucun produit dans le panier',"control_process":False})
     for commande_valeur in commandes_client:
-      i=commande_valeur.somme
+      i=float(commande_valeur.somme)
       valeur_produit_panier.insert(0,i)
+    #Panier et le nombre d'element du panier
     valeur_totale=sum(valeur_produit_panier)
-    panier_produit=commandes_schema.dump(commandes_client) 
+    valeur_totale=valeur_totale
+    panier_produit=panier
     
-    return jsonify({'panier':panier_produit, 'valeur':valeur_totale,"control_process":True })
+    return jsonify({'panier':panier_produit, 'valeur':valeur_totale,"control_process":True, 'nbre_panier':nbr_produit_panier })
 
 
 
@@ -202,12 +244,15 @@ def panier(current_user):
 @apis.route('/commander',methods=['POST','GET','DELETE','PUT'])
 @token_required
 def commander(current_user):
+
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
     """ Cette fonction retourne la variable control_process en True, si la commande a reussi et False si vous n'avez rien dans le panier """
     valeur_produit_panier=[]
     commandes_schema = CommandesSchema(many=True)
     commandes_client=Commandes.query.filter_by(user_id=current_user.id).all()
     if commandes_client==[]:
-        return jsonify({'message':'Aucun produit dans le panier',"control_process":False})
+        return jsonify({'message':'Aucun produit dans le panier',"control_process":False,'nbre_panier':nbre_panier})
 
     code_encours=codecommande() #Code de la facture
     valeur_commande_panier=[]
@@ -231,7 +276,7 @@ def commander(current_user):
         Commandes.query.filter_by(id=dans_commande_panier.id).delete()
         db.session.commit()
 
-    return jsonify({'message':"Commande reussie", "control_process":True })
+    return jsonify({'message':"Commande reussie", "control_process":True,'nbre_panier':nbre_panier })
 
 
 #Liste commandé produit
@@ -243,15 +288,17 @@ def commande_utilisateur(current_user, id):
 
     enre_facture_montant=Facture.query.filter_by(id=id).first()
 
+    panier=[]
+
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
+
     if enre_facture_montant is None:
-        return jsonify({'message':"Cette commande n'existe pas","control_process":False})
+        return jsonify({'message':"Cette commande n'existe pas","control_process":False,'nbre_panier':nbre_panier})
 
     panier_des_donnes=Panier.query.filter_by(facture_id=id).all()
     if panier_des_donnes==[]:
-        return jsonify({'message':"Aucun produit dans la commande","control_process":False})
-    paniers_schema=PanierSchema(many=True)
-    commande_pan=paniers_schema.dump(panier_des_donnes)
-
+        return jsonify({'message':"Aucun produit dans la commande","control_process":False,'nbre_panier':nbre_panier})
     #Valeur total de la commande
     val_com_facture=[]
     for  paniers in panier_des_donnes:
@@ -259,7 +306,25 @@ def commande_utilisateur(current_user, id):
         val_com_facture.insert(0,i)
     valeur_totale_panier=sum(val_com_facture)
 
-    return jsonify({'message':'Produit de commande', 'commande':commande_pan,"valeur_panier":valeur_totale_panier,"control_process":True })
+    #Ajout des elements dans le panier
+    for p in panier_des_donnes:
+        p={
+            'id': p.produit_panier.id,
+            'nom_produit': p.produit_panier.nom,
+			'url_image':  p.produit_panier.img_url,
+			'categorie' : p.produit_panier.categorie_produit.nom,
+			'qte': p.quantite,
+            'prix_p':p.prix_p,
+			'somme': p.valeur,
+        }
+        p=json.dumps(p, cls=DecimalEncoder)
+        panier.insert(0,p)
+    #Nom
+    nbr_produit_panier=len(panier)
+    nbr_produit_panier=nbr_produit_panier
+    commande_pan=panier
+
+    return jsonify({'message':'Produit de commande', 'commande':commande_pan,"valeur_panier":valeur_totale_panier,"control_process":True,'nbre_panier':nbre_panier })
 
 
 #Liste des produits en exposition
@@ -272,7 +337,9 @@ def commandes(current_user):
         return jsonify({'message':"Aucune commande disponible","control_process":False})
     commandes_schema = FactureSchema(many=True)
     toutes_commandes=commandes_schema.dump(commande) 
-    return jsonify({'commandes':toutes_commandes,'message':"Liste des commandes","control_process":True})
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
+    return jsonify({'commandes':toutes_commandes,'message':"Liste des commandes","control_process":True,'nbre_panier':nbre_panier})
 
 
 #Liste des categories
@@ -280,27 +347,188 @@ def commandes(current_user):
 @token_required
 def categorie(current_user):
     """ Cette fonction retourne la liste des commandes"""
-    categories=Categorie.query.filter_by(statut=True).all()
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
+
+    categorie_de_produit=[]
+    categories=Categorie.query.filter_by(statut=True).order_by(Categorie.id.desc()).all()
     if categories == []:
-        return jsonify({'message':"Aucune categorie n'est disponible","control_process":False})
-    categorie_schema = CategorieSchema(many=True)
-    toutes_categorie=categorie_schema.dump(categories) 
-    return jsonify({'categorie':toutes_categorie,'message':"Listes des categories","control_process":True})
+        return jsonify({'message':"Aucune categorie n'est disponible","control_process":False,'nbre_panier':nbre_panier})
+    
+    for cat in categories:
+        categ = {'id':cat.id,'nom':cat.nom, 'produit':[{'id' : i.id, 'nom_produit': i.nom, 'url_image':  i.img_url, 'mesure' : i.mesure, 'prix_p':i.prix_p }  for i in cat.produits]}
+        #categ=json.dumps(categ, cls=DecimalEncoder)
+        categorie_de_produit.insert(0,categ)
+       
+    return jsonify({'categorie':categorie_de_produit,'message':"Listes des categories","control_process":True,'nbre_panier':nbre_panier})
 
 #Liste des produits en exposition
 @apis.route('/categories/<int:id>',methods=['GET'])
 @token_required
 def categorie_produit(current_user, id):
     """ Cette fonction retourne la liste des commandes"""
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
+
     categories=Categorie.query.filter_by(id=id).first()
     if categories is None:
-        return jsonify({'message':"Aucune categorie n'est disponible","control_process":False})
+        return jsonify({'message':"Aucune categorie n'est disponible","control_process":False,'nbre_panier':nbre_panier})
 
     produit_categorie=Produit.query.filter_by(statut=True, categorie_id=id).all()
     produits_schema = ProduitSchema(many=True)
     produits_categorie=produits_schema.dump(produit_categorie) 
-    return jsonify({'produits':produits_categorie,'message':"Liste des produit par catégorie","control_process":True})
+    return jsonify({'produits':produits_categorie,'message':"Liste des produit par catégorie","control_process":True,'nbre_panier':nbre_panier})
 
+#Payements
+@apis.route('/payement/<int:id>',methods=['GET','PUT'])
+@token_required
+def payements(current_user, id):
+    """ Pyament de commandes"""
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
+    #Les données du formulaire
+    data=request.get_json()
+    #La facture
+    facture_encours=Facture.query.filter_by(id=id, user_id=current_user.id).first()
+    if facture_encours.premier_payement == 0 and facture_encours.totalite==False:
+        #Payements
+        produit_facture=[]
+        panier_de_facture=Panier.query.filter_by(facture_id=id, user_id=current_user.id).all()
+        for produit in panier_de_facture:
+            p={
+                'id':produit.produit_panier.id,
+                'nom_produit':produit.produit_panier.nom,
+                'img_url':produit.produit_panier.img_url,
+                'quantite':produit.quantite,
+                'prix_p':produit.prix_p,
+                'valeur':produit.valeur
+            }
+            produit_facture.insert(0,p)
+        #Les informations de la factures
+        if data is not None:
+            if data['premier_payement']==facture_encours.valeur:
+                facture_encours.ref_payement_un= data['ref_payement_un']
+                facture_encours.totalite=True
+                facture_encours.tel=data['tel']
+                facture_encours.mail=data['mail']
+                facture_encours.adr=data['adr']
+            else:
+                facture_encours.premier_payement=data['premier_payement']
+                facture_encours.ref_payement_un=data['ref_payement_un']
+                facture_encours.tel=data['tel']
+                facture_encours.mail=data['mail']
+                facture_encours.adr=data['adr']
+            return jsonify({'produit':produit_facture,'message':"Premier payement effectué","control_process":True,'nbre_panier':nbre_panier})
+        db.session.commit()
+        #Valeur de la panier 
+        
+    else:
+        #Payements
+        produit_facture=[]
+        panier_de_facture=Panier.query.filter_by(facture_id=id, user_id=current_user.id).all()
+        for produit in panier_de_facture:
+            p={
+                'id':produit.produit_panier.id,
+                'nom_produit':produit.produit_panier.nom,
+                'img_url':produit.produit_panier.img_url,
+                'quantite':produit.quantite,
+                'prix_p':produit.prix_p,
+                'valeur':produit.valeur
+            }
+            produit_facture.insert(0,p)
+
+        return jsonify({'produit':produit_facture,'message':"Effectué le deuxieme payement",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
+
+#Payements
+@apis.route('/deux/payement/<int:id>',methods=['GET','PUT'])
+@token_required
+def payements_deux(current_user, id):
+    """ Pyament de commandes"""
+    #Le nombre des produits dans le panier
+    nbre_panier=produit_du_panier()
+    #La facture
+    facture_encours=Facture.query.filter_by(id=id, user_id=current_user.id).first()
+    if facture_encours.premier_payement != 0 and facture_encours.totalite==False:
+        #Les données du formulaire
+        data=request.get_json()
+        #Payements
+        produit_facture=[]
+        panier_de_facture=Panier.query.filter_by(facture_id=id, user_id=current_user.id).all()
+        for produit in panier_de_facture:
+            p={
+                'id':produit.produit_panier.id,
+                'nom_produit':produit.produit_panier.nom,
+                'img_url':produit.produit_panier.img_url,
+                'quantite':produit.quantite,
+                'prix_p':produit.prix_p,
+                'valeur':produit.valeur
+            }
+            produit_facture.insert(0,p)
+        #Vérification des payement
+        if data is not None:
+            premier=float(facture_encours.premier_payement)
+            total=float(facture_encours.valeur)
+            payement_deuxieme=float(data['premier_deuxieme'])
+            #La difference
+            addition = premier + payement_deuxieme
+            if addition == total:
+                facture_encours.totalite=True
+                facture_encours.deuxieme_payement=payement_deuxieme
+                facture_encours.ref_payement_deux=data['ref_payement_deux']
+                db.session.commit()
+                return jsonify({'produit':produit_facture,'message':"Payement éffectué",'premier_payement':facture_encours.premier_payement,'deuxieme_payement':facture_encours.deuxieme_payement,'total_facture':facture_encours.valeur,"control_process":True,'nbre_panier':nbre_panier})
+ 
+            else:
+                reste= total - addition
+                if reste < 0:
+                    #Payements
+                    produit_facture=[]
+                    panier_de_facture=Panier.query.filter_by(facture_id=id, user_id=current_user.id).all()
+                    for produit in panier_de_facture:
+                        p={
+                            'id':produit.produit_panier.id,
+                            'nom_produit':produit.produit_panier.nom,
+                            'img_url':produit.produit_panier.img_url,
+                            'quantite':produit.quantite,
+                            'prix_p':produit.prix_p,
+                            'valeur':produit.valeur
+                        }
+                        produit_facture.insert(0,p)
+
+                    return jsonify({'produit':produit_facture,'message':"Effectué juste le reste",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
+
+                if reste > 0:
+                    #Payements
+                    produit_facture=[]
+                    panier_de_facture=Panier.query.filter_by(facture_id=id, user_id=current_user.id).all()
+                    for produit in panier_de_facture:
+                        p={
+                            'id':produit.produit_panier.id,
+                            'nom_produit':produit.produit_panier.nom,
+                            'img_url':produit.produit_panier.img_url,
+                            'quantite':produit.quantite,
+                            'prix_p':produit.prix_p,
+                            'valeur':produit.valeur
+                        }
+                        produit_facture.insert(0,p)
+
+                    return jsonify({'produit':produit_facture,'message':"Payer la totalité du reste",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
+    else:
+        #Payements
+        produit_facture=[]
+        panier_de_facture=Panier.query.filter_by(facture_id=id, user_id=current_user.id).all()
+        for produit in panier_de_facture:
+            p={
+                'id':produit.produit_panier.id,
+                'nom_produit':produit.produit_panier.nom,
+                'img_url':produit.produit_panier.img_url,
+                'quantite':produit.quantite,
+                'prix_p':produit.prix_p,
+                'valeur':produit.valeur
+            }
+            produit_facture.insert(0,p)
+
+        return jsonify({'produit':produit_facture,'message':"Effectué le deuxieme payement",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
 
 #Connextion à l'api
 @apis.route('/login')

@@ -1,4 +1,6 @@
 import os
+import json
+from decimal import Decimal
 from flask import jsonify, request, make_response
 from .. import db, bcrypt
 from ..models import User, Commandes, CommandesSchema, Facture 
@@ -9,6 +11,13 @@ from app import create_app
 
 config_name = os.getenv('FLASK_CONFIG')
 app = create_app(config_name)
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return float(o)
+        return super(DecimalEncoder, self).default(o)
 
 def token_required(f):
     @wraps(f)
@@ -41,4 +50,12 @@ def codecommande(current_user):
 
     return codecommande_encours_unique
 
-
+@token_required
+def produit_du_panier(current_user):
+    # Les produits du panier
+    panier=[]
+    commandes_client=Commandes.query.filter_by(user_id=current_user.id).all()
+    for produit in commandes_client:
+        i=produit.id
+        panier.insert(0,i)
+    return len(panier)

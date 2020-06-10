@@ -99,7 +99,25 @@
                             </div>
                     </div> 
                 </div>
-                
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="form-group">
+                                    <label>Contenue sur android</label>
+                                    {% if form.resume_android.errors %}
+                                    {{ form.resume_android(class="form-control border-input is-invalid")}}
+                                    <i class="form-group__bar"></i>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.resume_android.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.resume_android(class="form-control border-input")}}
+                                    <i class="form-group__bar"></i>
+                                    {% endif %}
+                            </div>
+                    </div> 
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                             <div class="form-group">

@@ -16,6 +16,7 @@ class AjoutProForm(FlaskForm):
     img_url=URLField('URL')
     mesure= StringField('Unité de mesure', validators=[DataRequired("Unité de mesure"),  Length(min=4, max=32, message="Veuillez respecté les caractères")])
     resume= TextAreaField('Contenu', validators=[DataRequired("Completer le contenu")])
+    resume_android= TextAreaField('Contenu', validators=[DataRequired("Completer le contenu")])
     rech_cate= QuerySelectField(query_factory=rech_cate, get_label='nom', allow_blank=False)
     submit = SubmitField('Produit')
 
@@ -27,6 +28,7 @@ class EdProForm(FlaskForm):
     ed_nom= StringField('Nom', validators=[DataRequired("Completer nom"),  Length(min=4, max=32, message="Veuillez respecté les caractères")])
     ed_prix_p= DecimalField('Prix', validators=[DataRequired("Le prix du produit")])
     ed_img_url=URLField('URL')
+    resume_android= TextAreaField('Contenu', validators=[DataRequired("Completer le contenu")])
     ed_rech_cate= QuerySelectField(query_factory=rech_cate, get_label='nom', allow_blank=False)
     mesure= StringField('Unité de mesure', validators=[DataRequired("Unité de mesure"),  Length(min=4, max=32, message="Veuillez respecté les caractères")])
     resume= TextAreaField('Contenu', validators=[DataRequired("Completer le contenu")])

@@ -52,14 +52,14 @@ def ajoutprod():
       code_produit=code_pro_systeme
       #Produit 
       if form.img_url.data=="":
-         produit_enre=Produit(nom=nom_pro, mesure=form.mesure.data, description=form.resume.data, categorie_id=form.rech_cate.data.id, prix_p=form.prix_p.data,user_produit=current_user, statut=False, code=code_produit)
+         produit_enre=Produit(nom=nom_pro, mesure=form.mesure.data, description=form.resume.data, description_android=form.resume_android.data, categorie_id=form.rech_cate.data.id, prix_p=form.prix_p.data,user_produit=current_user, statut=False, code=code_produit)
          db.session.add(produit_enre)
          db.session.commit()
          flash("Charger l'image du produit maintenant!",'success')
          session['img']=code_produit
          return redirect(url_for('produit.upload_file'))
       else: 
-         produit_enre=Produit(nom=nom_pro, mesure=form.mesure.data, description=form.resume.data, categorie_id=form.rech_cate.data.id, prix_p=form.prix_p.data,user_produit=current_user, img_url=form.img_url.data, statut=False, code=code_produit)
+         produit_enre=Produit(nom=nom_pro, mesure=form.mesure.data, description=form.resume.data, description_android=form.resume_android.data, categorie_id=form.rech_cate.data.id, prix_p=form.prix_p.data,user_produit=current_user, img_url=form.img_url.data, statut=False, code=code_produit)
          db.session.add(produit_enre)
          db.session.commit()
          flash("Ajout d'un nouveau produit",'success')
@@ -175,6 +175,7 @@ def editpro(pro_id):
             pro_class.nom=form.ed_nom.data.capitalize()
             pro_class.categorie_id=form.ed_rech_cate.data.id
             pro_class.prix_p=form.ed_prix_p.data
+            pro_class.resume_android=form.resume_android.data
             pro_class.description=form.resume.data
             pro_class.mesure=form.mesure.data
             db.session.commit()
@@ -187,6 +188,7 @@ def editpro(pro_id):
             pro_class.prix_p=form.ed_prix_p.data
             pro_class.img_url=form.ed_img_url.data
             pro_class.description=form.resume.data
+            pro_class.resume_android=form.resume_android.data
             pro_class.mesure=form.mesure.data
             db.session.commit()
             flash("Modification réussie",'success')
