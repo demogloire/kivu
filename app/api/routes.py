@@ -79,9 +79,9 @@ def produit(current_user):
 
 
 #utilisateur encours d'utilisation
-@apis.route('/utilisateur/<string:public_id>',methods=['GET'])
+@apis.route('/utilisateur',methods=['GET'])
 @token_required
-def utilisateur(current_user, public_id):
+def utilisateur(current_user):
     """ Cette fonction retourne un utilisateur la variable utilisateurs un_utilisateur
         dans le cas contraire elle retourne une erreur avec la variable de contrôle
         control_process: False
@@ -89,7 +89,7 @@ def utilisateur(current_user, public_id):
     nbre_panier=produit_du_panier()
     user_schema = UserSchema()
     users_schema = UserSchema(many=True)
-    verifcation_user_profil=User.query.filter_by(public_id=public_id).first()
+    verifcation_user_profil=User.query.filter_by(id=current_user.id).first()
     if verifcation_user_profil is None :
         return jsonify({'message':"Aucun utilisateur associer","control_process":False})
     user_one=user_schema.dump(verifcation_user_profil) 
@@ -217,10 +217,9 @@ def panier(current_user):
             'nom_produit': p.produit_commande.nom,
 			'url_image':  p.produit_commande.img_url,
 			'categorie' : p.produit_commande.categorie_produit.nom,
-			'qte': p.qte,
-			'somme': p.somme,
+			'qte': float(p.qte),
+			'somme': float(p.somme),
         }
-        p=json.dumps(p, cls=DecimalEncoder)
         panier.insert(0,p)
     #Nom
     nbr_produit_panier=len(panier)
