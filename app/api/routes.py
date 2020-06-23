@@ -46,6 +46,95 @@ def ajouterutilisateur():
     return jsonify({'message':'success'})
 
 
+#Profil de l'utilisateur
+@apis.route('/profil',methods=['GET'])
+@token_required
+def profil(current_user):
+    user=User.query.filter_by(id=current_user.id).first()
+    user_one=[]
+    nbre_panier=produit_du_panier()
+    utilisateur_donnees={
+        "nom": user.nom,
+        "post_nom":user.post_nom,
+        "prenom":user.prenom,
+        "tel":user.tel,
+        "mail":user.mail,
+        "adr":user.adr,
+        "username":user.username
+    }
+    user_one.insert(0,utilisateur_donnees)
+    return jsonify({'message':'success', "utilisateur":user_one, 'nbre_panier':nbre_panier})
+
+#Mise à jour du profil
+@apis.route('/maj/profil',methods=['GET','PUT'])
+@token_required
+def profil_maj(current_user):
+    user=User.query.filter_by(id=current_user.id).first()
+    # Les données du formulaire
+    data=request.get_json()
+    nbre_panier=produit_du_panier()
+    user_one=[]
+    utilisateur_donnees={
+        "nom": user.nom,
+        "post_nom":user.post_nom,
+        "prenom":user.prenom,
+        "tel":user.tel,
+        "mail":user.mail,
+        "adr":user.adr,
+        "username":user.username
+    }
+    user_one.insert(0,utilisateur_donnees)
+    if data is not None:
+        user_name=User.query.filter_by(username=data['username']).first()
+        if user_name:
+            user.nom=data['nom']
+            user.post_nom=data['post_nom']
+            user.prenom=data['prenom']
+            user.tel=data['tel']
+            user.mail=data['mail']
+            user.adr=data['adr']
+            db.session.commit()
+            return jsonify({'message':'Mise à jour avec succès', "control_process":True })
+        else:
+            user.nom=data['nom']
+            user.post_nom=data['post_nom']
+            user.prenom=data['prenom']
+            user.tel=data['tel']
+            user.mail=data['mail']
+            user.adr=data['adr']
+            user.username=data['username']
+            db.session.commit()
+            return jsonify({'message':'Mise à jour avec succès', "control_process":True })
+    return jsonify({'message':'Envoie les données svp','utili_donnees': user_one, 'nbre_panier':nbre_panier})
+
+#Enregistrement des utilisateurs
+@apis.route('/majpass/profil',methods=['GET','PUT'])
+@token_required
+def profil_pass(current_user):
+    user=User.query.filter_by(id=current_user.id).first()
+    # Les données du formulaire
+    data=request.get_json()
+    user_one=[]
+    nbre_panier=produit_du_panier()
+    utilisateur_donnees={
+        "nom": user.nom,
+        "post_nom":user.post_nom,
+        "prenom":user.prenom,
+        "tel":user.tel,
+        "mail":user.mail,
+        "adr":user.adr,
+        "username":user.username
+    }
+    user_one.insert(0,utilisateur_donnees)
+    if data is not None:
+        password_hash=bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        user.password=password_hash
+        db.session.commit()  
+        return jsonify({'message':'Mise à jour avec succès', "control_process":True })
+        
+    return jsonify({'message':'Envoie les données svp','utili_donnees': user_one, 'nbre_panier':nbre_panier})
+
+
 #Liste des produits en exposition
 @apis.route('/produit',methods=['GET'])
 @token_required
@@ -312,18 +401,18 @@ def commande_utilisateur(current_user, id):
             'nom_produit': p.produit_panier.nom,
 			'url_image':  p.produit_panier.img_url,
 			'categorie' : p.produit_panier.categorie_produit.nom,
-			'qte': p.quantite,
-            'prix_p':p.prix_p,
-			'somme': p.valeur,
+			'qte': int(p.quantite),
+            'prix_p':float(p.prix_p),
+			'somme': float(p.valeur),
         }
-        p=json.dumps(p, cls=DecimalEncoder)
         panier.insert(0,p)
     #Nom
     nbr_produit_panier=len(panier)
     nbr_produit_panier=nbr_produit_panier
     commande_pan=panier
+    nbre_commande=len(panier)
 
-    return jsonify({'message':'Produit de commande', 'commande':commande_pan,"valeur_panier":valeur_totale_panier,"control_process":True,'nbre_panier':nbre_panier })
+    return jsonify({'message':'Produit de commande','nbre_commande':nbre_commande,'commande':commande_pan,"valeur_panier":valeur_totale_panier,"control_process":True,'nbre_panier':nbre_panier })
 
 
 #Liste des produits en exposition
@@ -331,14 +420,37 @@ def commande_utilisateur(current_user, id):
 @token_required
 def commandes(current_user):
     """ Cette fonction retourne la liste des commandes"""
+    commdandes_encours=[]
     commande=Facture.query.filter_by(user_id=current_user.id).all()
     if commande == []:
         return jsonify({'message':"Aucune commande disponible","control_process":False})
-    commandes_schema = FactureSchema(many=True)
-    toutes_commandes=commandes_schema.dump(commande) 
+    
+    for com in commande:
+        p={
+            "adr":  com.adr,
+            "annul": com.annul,
+            "code_commande": com.code_commande,
+            "datecommande": com.datecommande,
+            "deuxieme_payement": com.deuxieme_payement,
+            "id": com.id,
+            "mail": com.mail,
+            "paniers": [{'id' : i.id, 'nom_produit': i.produit_panier.nom, 'url_image':  i.produit_panier.img_url, 'mesure' : i.produit_panier.mesure, "qte":i.quantite, "valeur":i.valeur, 'prix_p':i.prix_p }  for i in com.paniers],
+            "premier_payement": com.premier_payement,
+            "ref_payement_deux": com.ref_payement_deux,
+            "ref_payement_totalite": com.ref_payement_totalite,
+            "ref_payement_un": com.ref_payement_un,
+            "statut": com.statut,
+            "tel": com.tel,
+            "totalite": com.totalite,
+            "valeur": com.valeur
+        }
+        commdandes_encours.insert(0,p)
+        
+    
     #Le nombre des produits dans le panier
+    commdandes_encours_nbr=len(commdandes_encours)
     nbre_panier=produit_du_panier()
-    return jsonify({'commandes':toutes_commandes,'message':"Liste des commandes","control_process":True,'nbre_panier':nbre_panier})
+    return jsonify({'commandes':commdandes_encours,'nbr_commande':commdandes_encours_nbr,  'message':"Liste des commandes","control_process":True,'nbre_panier':nbre_panier})
 
 
 #Liste des categories
@@ -389,7 +501,7 @@ def payements(current_user, id):
     data=request.get_json()
     #La facture
     facture_encours=Facture.query.filter_by(id=id, user_id=current_user.id).first()
-    if facture_encours.premier_payement == 0 and facture_encours.totalite==False:
+    if facture_encours.premier_payement == 0 or facture_encours.premier_payement is None  and facture_encours.totalite==False:
         #Payements
         produit_facture=[]
         panier_de_facture=Panier.query.filter_by(facture_id=id, user_id=current_user.id).all()
@@ -404,6 +516,7 @@ def payements(current_user, id):
             }
             produit_facture.insert(0,p)
         #Les informations de la factures
+        
         if data is not None:
             if data['premier_payement']==facture_encours.valeur:
                 facture_encours.ref_payement_un= data['ref_payement_un']
@@ -417,8 +530,9 @@ def payements(current_user, id):
                 facture_encours.tel=data['tel']
                 facture_encours.mail=data['mail']
                 facture_encours.adr=data['adr']
+            db.session.commit()
             return jsonify({'produit':produit_facture,'message':"Premier payement effectué","control_process":True,'nbre_panier':nbre_panier})
-        db.session.commit()
+        
         #Valeur de la panier 
         
     else:
