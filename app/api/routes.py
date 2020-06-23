@@ -327,7 +327,6 @@ def panier(current_user):
     return jsonify({'panier':panier_produit, 'valeur':valeur_totale,"control_process":True, 'nbre_panier':nbr_produit_panier })
 
 
-
 #Liste commandé produit
 @apis.route('/commander',methods=['POST','GET','DELETE','PUT'])
 @token_required
