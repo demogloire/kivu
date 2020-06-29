@@ -306,7 +306,7 @@ def panier(current_user):
             'nom_produit': p.produit_commande.nom,
 			'url_image':  p.produit_commande.img_url,
 			'categorie' : p.produit_commande.categorie_produit.nom,
-			'qte': float(p.qte),
+			'qte': int(p.qte),
 			'somme': float(p.somme),
         }
         panier.insert(0,p)
@@ -327,7 +327,7 @@ def panier(current_user):
     return jsonify({'panier':panier_produit, 'valeur':valeur_totale,"control_process":True, 'nbre_panier':nbr_produit_panier })
 
 
-#Liste commandé produit
+#Liste commandé produit                                                                                                                                         
 @apis.route('/commander',methods=['POST','GET','DELETE','PUT'])
 @token_required
 def commander(current_user):
@@ -444,13 +444,10 @@ def commandes(current_user):
             "valeur": com.valeur
         }
         commdandes_encours.insert(0,p)
-        
-    
     #Le nombre des produits dans le panier
     commdandes_encours_nbr=len(commdandes_encours)
     nbre_panier=produit_du_panier()
     return jsonify({'commandes':commdandes_encours,'nbr_commande':commdandes_encours_nbr,  'message':"Liste des commandes","control_process":True,'nbre_panier':nbre_panier})
-
 
 #Liste des categories
 @apis.route('/categories',methods=['GET'])
@@ -500,7 +497,7 @@ def payements(current_user, id):
     data=request.get_json()
     #La facture
     facture_encours=Facture.query.filter_by(id=id, user_id=current_user.id).first()
-    if facture_encours.premier_payement == 0 or facture_encours.premier_payement is None  and facture_encours.totalite==False:
+    if facture_encours.premier_payement == 0 and facture_encours.totalite==False:
         #Payements
         produit_facture=[]
         panier_de_facture=Panier.query.filter_by(facture_id=id, user_id=current_user.id).all()
@@ -509,13 +506,12 @@ def payements(current_user, id):
                 'id':produit.produit_panier.id,
                 'nom_produit':produit.produit_panier.nom,
                 'img_url':produit.produit_panier.img_url,
-                'quantite':produit.quantite,
+                'quantite':int(produit.quantite),
                 'prix_p':produit.prix_p,
                 'valeur':produit.valeur
             }
             produit_facture.insert(0,p)
         #Les informations de la factures
-        
         if data is not None:
             if data['premier_payement']==facture_encours.valeur:
                 facture_encours.ref_payement_un= data['ref_payement_un']
@@ -531,9 +527,7 @@ def payements(current_user, id):
                 facture_encours.adr=data['adr']
             db.session.commit()
             return jsonify({'produit':produit_facture,'message':"Premier payement effectué","control_process":True,'nbre_panier':nbre_panier})
-        
-        #Valeur de la panier 
-        
+        return jsonify({'produit':produit_facture,'message':"Prière d'éffectuer le premier payement","control_process":False,'nbre_panier':nbre_panier,'totalit_facture':facture_encours.valeur,'ref_premier':facture_encours.ref_payement_un})
     else:
         #Payements
         produit_facture=[]
@@ -543,13 +537,13 @@ def payements(current_user, id):
                 'id':produit.produit_panier.id,
                 'nom_produit':produit.produit_panier.nom,
                 'img_url':produit.produit_panier.img_url,
-                'quantite':produit.quantite,
+                'quantite':int(produit.quantite),
                 'prix_p':produit.prix_p,
                 'valeur':produit.valeur
             }
             produit_facture.insert(0,p)
-
-        return jsonify({'produit':produit_facture,'message':"Effectué le deuxieme payement",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
+        reste_payement=float(facture_encours.valeur) - float(facture_encours.premier_payement)
+    return jsonify({'produit':produit_facture,'message':"Effectué le  deuxième payement",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier, 'reste':reste_payement})
 
 #Payements
 @apis.route('/deux/payement/<int:id>',methods=['GET','PUT'])
@@ -571,7 +565,7 @@ def payements_deux(current_user, id):
                 'id':produit.produit_panier.id,
                 'nom_produit':produit.produit_panier.nom,
                 'img_url':produit.produit_panier.img_url,
-                'quantite':produit.quantite,
+                'quantite':int(produit.quantite),
                 'prix_p':produit.prix_p,
                 'valeur':produit.valeur
             }
@@ -589,7 +583,6 @@ def payements_deux(current_user, id):
                 facture_encours.ref_payement_deux=data['ref_payement_deux']
                 db.session.commit()
                 return jsonify({'produit':produit_facture,'message':"Payement éffectué",'premier_payement':facture_encours.premier_payement,'deuxieme_payement':facture_encours.deuxieme_payement,'total_facture':facture_encours.valeur,"control_process":True,'nbre_panier':nbre_panier})
- 
             else:
                 reste= total - addition
                 if reste < 0:
@@ -601,14 +594,13 @@ def payements_deux(current_user, id):
                             'id':produit.produit_panier.id,
                             'nom_produit':produit.produit_panier.nom,
                             'img_url':produit.produit_panier.img_url,
-                            'quantite':produit.quantite,
+                            'quantite':int(produit.quantite),
                             'prix_p':produit.prix_p,
                             'valeur':produit.valeur
                         }
                         produit_facture.insert(0,p)
 
                     return jsonify({'produit':produit_facture,'message':"Effectué juste le reste",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
-
                 if reste > 0:
                     #Payements
                     produit_facture=[]
@@ -618,13 +610,17 @@ def payements_deux(current_user, id):
                             'id':produit.produit_panier.id,
                             'nom_produit':produit.produit_panier.nom,
                             'img_url':produit.produit_panier.img_url,
-                            'quantite':produit.quantite,
+                            'quantite':int(produit.quantite),
                             'prix_p':produit.prix_p,
                             'valeur':produit.valeur
                         }
                         produit_facture.insert(0,p)
 
                     return jsonify({'produit':produit_facture,'message':"Payer la totalité du reste",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
+        reste_payement=float(facture_encours.valeur) - float(facture_encours.premier_payement)
+        
+        return jsonify({'produit':produit_facture,'message':"Prière d'éffectuer le deuxième payement",'premier_payement':reste_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
+ 
     else:
         #Payements
         produit_facture=[]
@@ -634,13 +630,12 @@ def payements_deux(current_user, id):
                 'id':produit.produit_panier.id,
                 'nom_produit':produit.produit_panier.nom,
                 'img_url':produit.produit_panier.img_url,
-                'quantite':produit.quantite,
+                'quantite':int(produit.quantite),
                 'prix_p':produit.prix_p,
                 'valeur':produit.valeur
             }
             produit_facture.insert(0,p)
-
-        return jsonify({'produit':produit_facture,'message':"Effectué le deuxieme payement",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
+        return jsonify({'produit':produit_facture,'message':"Vérifier tes informations",'premier_payement':facture_encours.premier_payement,'total_facture':facture_encours.valeur,"control_process":False,'nbre_panier':nbre_panier})
 
 #Connextion à l'api
 @apis.route('/login')
