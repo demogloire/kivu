@@ -8,7 +8,7 @@ import uuid
 import jwt
 import datetime
 from functools import wraps
-from app.api.function_api import token_required, codecommande, DecimalEncoder, produit_du_panier
+from app.api.function_api import token_required, codecommande, DecimalEncoder, produit_du_panier, produit_simulaire
 
 #from flask_login import login_user, current_user, logout_user, login_required
 from . import apis
@@ -193,6 +193,7 @@ def produit_vente(current_user, id):
         dans le cas contraire False
     """
     data=request.get_json()
+    produit_simulaire=None
 
     if not id:
         return jsonify({'message':"Vérifier les parametres","control_process":False})
@@ -201,8 +202,9 @@ def produit_vente(current_user, id):
     produits_schema = ProduitSchema(many=True)
     #Le nombre des produits dans le panier
     nbre_panier=produit_du_panier()
-
+    
     verifcation_porduit_vente=Produit.query.filter_by(id=id).first()
+    
     if verifcation_porduit_vente is None :
         return jsonify({'message':"Ce produit n'existe pas","control_process":False,'nbre_panier':nbre_panier})
     else:
@@ -223,6 +225,25 @@ def produit_vente(current_user, id):
             return jsonify({'message':"Ajout au panier avec succès","control_process":True,'nbre_panier':nbre_panier})
     return jsonify({'message':'Verifier les information',"control_process":False,'nbre_panier':nbre_panier})
 
+@apis.route('/produit_similaire/<int:id>',methods=['GET'])
+def produit_sumulaire(id):
+    les_memes_categories=[]
+    verifcation_porduit_vente=Produit.query.filter_by(id=id).first()
+    produit_meme_cat=Produit.query.filter_by(categorie_id=verifcation_porduit_vente.categorie_id).all()
+    for produit in produit_meme_cat:
+        if produit.id !=verifcation_porduit_vente.id:
+            p={
+                'id': produit.id,
+                'nom': produit.nom,
+                'prix_p':produit.prix_p,
+                'code':produit.code,
+                'img_url':produit.img_url,
+                'description_android':produit.description_android,
+                'mesure': produit.mesure,
+            }
+            les_memes_categories.insert(0,p)
+    
+    return jsonify({'produit':les_memes_categories})
 
 #Ajout au panier
 @apis.route('/produit_supprimer/<int:id>',methods=['DELETE'])
@@ -304,6 +325,7 @@ def panier(current_user):
         p={
             'id': p.produit_commande.id,
             'nom_produit': p.produit_commande.nom,
+            'mesure': p.produit_commande.mesure,
 			'url_image':  p.produit_commande.img_url,
 			'categorie' : p.produit_commande.categorie_produit.nom,
 			'qte': int(p.qte),
@@ -413,6 +435,34 @@ def commande_utilisateur(current_user, id):
 
     return jsonify({'message':'Produit de commande','nbre_commande':nbre_commande,'commande':commande_pan,"valeur_panier":valeur_totale_panier,"control_process":True,'nbre_panier':nbre_panier })
 
+
+#Liste des produits en exposition
+@apis.route('/home/produit',methods=['GET'])
+def produit_home():
+    """ Cette fonction retourne la liste des produits en expositions """
+    produit_schema = ProduitSchema()
+    produits_schema = ProduitSchema(many=True)
+    produit_all=produits_schema.dump(Produit.query.filter_by(statut=True).all()) 
+    #Les produits en de la catélogues
+    tous_les_produit=Produit.query.filter_by(statut=True).all()
+    #Liste des produits
+    produits=[]
+
+    for produit in tous_les_produit:
+        p={
+            'id': produit.id,
+            'nom': produit.nom,
+            'prix_p':produit.prix_p,
+            'code':produit.code,
+            'img_url':produit.img_url,
+            'description_android':produit.description_android,
+            'mesure': produit.mesure,
+            'categori_id':produit.categorie_produit.id,
+            'nom_categorie':produit.categorie_produit.nom,
+        }
+        produits.insert(0,p)
+
+    return jsonify({'produits':produits})
 
 #Liste des produits en exposition
 @apis.route('/commandes',methods=['GET'])

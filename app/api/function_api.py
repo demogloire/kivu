@@ -59,3 +59,22 @@ def produit_du_panier(current_user):
         i=produit.id
         panier.insert(0,i)
     return len(panier)
+
+
+def produit_simulaire(id):
+    verifcation_porduit_vente=Produit.query.filter_by(id=id).first()
+    les_memes_categories=[]
+    produit_meme_cat=Produit.query.filter_by(categorie_id=verifcation_porduit_vente.categorie_id).all()
+
+    for produit in produit_meme_cat:
+        p={
+            'id': produit.id,
+            'nom': produit.nom,
+            'prix_p':produit.prix_p,
+            'code':produit.code,
+            'img_url':produit.img_url,
+            'description_android':produit.description_android,
+            'mesure': produit.mesure,
+        }
+        les_memes_categories.insert(0,p)
+    return les_memes_categories
