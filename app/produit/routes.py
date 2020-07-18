@@ -175,7 +175,7 @@ def editpro(pro_id):
             pro_class.nom=form.ed_nom.data.capitalize()
             pro_class.categorie_id=form.ed_rech_cate.data.id
             pro_class.prix_p=form.ed_prix_p.data
-            pro_class.resume_android=form.resume_android.data
+            pro_class.description_android=form.resume_android.data
             pro_class.description=form.resume.data
             pro_class.mesure=form.mesure.data
             db.session.commit()
@@ -188,7 +188,7 @@ def editpro(pro_id):
             pro_class.prix_p=form.ed_prix_p.data
             pro_class.img_url=form.ed_img_url.data
             pro_class.description=form.resume.data
-            pro_class.resume_android=form.resume_android.data
+            pro_class.description_android=form.resume_android.data
             pro_class.mesure=form.mesure.data
             db.session.commit()
             flash("Modification réussie",'success')
@@ -198,7 +198,7 @@ def editpro(pro_id):
          if form.ed_img_url.data=="":
             pro_class.prix_p=form.ed_prix_p.data
             pro_class.description=form.resume.data
-            pro_class.resume_android=form.resume_android.data
+            pro_class.description_android=form.resume_android.data
             pro_class.mesure=form.mesure.data
             db.session.commit()
             flash("Veuillez upload l'image",'success')
@@ -208,7 +208,7 @@ def editpro(pro_id):
             pro_class.prix_p=form.ed_prix_p.data
             pro_class.img_url=form.ed_img_url.data
             pro_class.description=form.resume.data
-            pro_class.resume_android=form.resume_android.data
+            pro_class.description_android=form.resume_android.data
             pro_class.mesure=form.mesure.data
             db.session.commit()
             flash("Modification réussie",'success')
@@ -220,7 +220,7 @@ def editpro(pro_id):
       form.ed_prix_p.data=pro_class.prix_p
       form.ed_img_url.data=pro_class.img_url
       form.resume.data=pro_class.description
-      form.resume_android.data=pro_class.resume_android
+      form.resume_android.data=pro_class.description_android
       form.mesure.data=pro_class.mesure
    return render_template('produit/editpro.html', form=form, title=title, pro_nom=pro_nom)
 
