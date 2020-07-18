@@ -8,7 +8,7 @@ from flask_migrate import Migrate
 from flask_simplemde import SimpleMDE
 from flaskext.markdown import Markdown
 from flask_marshmallow import Marshmallow
-from flask_minify import minify
+#from flask_minify import minify
 #Importation des configuration de l'application sur le developpement de l'application
 from config import app_config
 
@@ -37,7 +37,7 @@ def create_app(config_name):
     Markdown(app)
     migrate = Migrate(app, db)
     
-    minify(app=app, html=True, js=True, cssless=True)
+    #minify(app=app, html=True, js=True, cssless=True)
     #wtf_tinymce.init_app(app)
     
 
