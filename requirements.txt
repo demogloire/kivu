@@ -47,7 +47,7 @@ pluggy==0.13.1
 ply==3.11
 protobuf==3.6.1
 pur==5.3.0
-py==1.8.0
+py==1.10.0
 pycparser==2.19
 PyJWT==1.7.1
 PyMySQL==0.9.3
