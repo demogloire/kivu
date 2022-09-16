@@ -33,7 +33,7 @@ itsdangerous==1.1.0
 Jinja2==2.10
 jsmin==2.2.2
 lesscpy==0.14.0
-Mako==1.0.7
+Mako==1.2.2
 Markdown==3.0.1
 MarkupSafe==1.1.0
 marshmallow==3.5.1
